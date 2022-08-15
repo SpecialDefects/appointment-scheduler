@@ -5,13 +5,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="405.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="400.0" maxWidth="330.0" minHeight="400.0" minWidth="330.0" prefHeight="400.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/17" fx:controller="Controller.LoginController" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextField fx:id="username" layoutX="95.0" layoutY="140.0" promptText="Username" />
       <TextField fx:id="password" layoutX="95.0" layoutY="170.0" promptText="Password" />
       <Button fx:id="loginButton" layoutX="95.0" layoutY="200.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Log In" />
-      <Label layoutX="169.0" layoutY="374.0" text="User Location:" />
+      <Label fx:id="userLocationLabel" layoutX="169.0" layoutY="374.0" text="User Location:" />
       <Label fx:id="userLocation" layoutX="245.0" layoutY="374.0" />
    </children>
 </Pane>
