@@ -20,7 +20,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        Translator.setLocale(Locale.getDefault());
+        Translator.setLocale(Locale.FRENCH);
         JDBC.makeConnection();
         launch(args);
     }
