@@ -5,7 +5,7 @@ import java.sql.Date;
 
 /** Represents a user from database **/
 public class User {
-    private Integer userID;
+    private Integer Id;
     private String userName;
     private Date created;
     private String createdBy;
@@ -21,7 +21,7 @@ public class User {
      * @param lastUpdatedBy name of user who performed update
      */
     public User(Integer userID, String userName, Date created, String createdBy, Timestamp lastUpdated, String lastUpdatedBy) {
-        this.userID = userID;
+        this.Id = userID;
         this.userName = userName;
         this.created = created;
         this.createdBy = createdBy;
@@ -29,5 +29,8 @@ public class User {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    public Integer getID() {
+        return this.Id;
+    }
 
 }
