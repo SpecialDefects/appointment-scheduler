@@ -1,5 +1,7 @@
 package Controller;
 
+import Model.Translator;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,35 +9,31 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    public TextField username;
-    public TextField password;
+    public TextField usernameField;
+    public TextField passwordField;
     public Button loginButton;
-    public Label userLocationLabel;
     public Label userLocation;
-    private ArrayList<String> languages = new ArrayList<String>(Arrays.asList("en", "fr"));
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Locale currentLocale = Locale.FRANCE;
-        String language = currentLocale.getLanguage();
-        if (languages.contains("language")) {
-            System.out.println("Translation exists");
-        }
-        ResourceBundle translator = ResourceBundle.getBundle("ResourceBundles/Language_" + currentLocale.getLanguage(), currentLocale);
 
 
-        username.setPromptText(translator.getString("username"));
-        password.setPromptText(translator.getString("password"));
-        loginButton.setText(translator.getString("login"));
-        userLocationLabel.setText(translator.getString("location"));
+        /** translate all text according to locale **/
+        usernameField.setPromptText(Translator.getTranslation("username"));
+        passwordField.setPromptText(Translator.getTranslation("password"));
+        loginButton.setText(Translator.getTranslation("login"));
 
+
+        /** set userLocation label to users zone id **/
         ZoneId zone = ZoneId.systemDefault();
-        Locale.getDefault().toString();
-        userLocation.setText(zone.toString());
+
+        userLocation.setText(zone.getId());
+    }
+
+    public void onActionOutsourcedButton(ActionEvent actionEvent) {
+
     }
 }
