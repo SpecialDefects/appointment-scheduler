@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.*;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
@@ -9,6 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable, LoadableController {
@@ -37,6 +41,10 @@ public class MainMenuController implements Initializable, LoadableController {
     public TableColumn appointmentEnd;
     public TableColumn appointmentCustomer;
     public TableColumn appointmentUser;
+    public RadioButton allAppointments;
+    public RadioButton monthAppointments;
+    public RadioButton weekAppointments;
+    public Label filterByLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -78,14 +86,29 @@ public class MainMenuController implements Initializable, LoadableController {
         appointmentEnd.setText(Translator.getTranslation("end"));
         appointmentCustomer.setText(Translator.getTranslation("customer"));
         appointmentUser.setText(Translator.getTranslation("user"));
+
         /** populate button text based on locale **/
         addCustomerButton.setText(Translator.getTranslation("create"));
         modifyCustomerButton.setText(Translator.getTranslation("modify"));
         deleteCustomerButton.setText(Translator.getTranslation("delete"));
+
         /** populate tab text based on locale **/
         customersTabLabel.setText(Translator.getTranslation("customers"));
         appointmentsTabLabel.setText(Translator.getTranslation("appointments"));
         userID.setText(Integer.toString(UserDao.getLoggedInUser().getID()));
+
+        filterByLabel.setText(Translator.getTranslation("filterby"));
+        /** populate radio button text based on locale **/
+        allAppointments.setText(Translator.getTranslation("all"));
+        monthAppointments.setText(Translator.getTranslation("month"));
+        weekAppointments.setText(Translator.getTranslation("week"));
+
+        allAppointments.setDisable(true);
+
+        /** populate appointment buttons **/
+        createAppointmentButton.setText(Translator.getTranslation("create"));
+        modifyAppointmentButton.setText(Translator.getTranslation("modify"));
+        deleteAppointmentButton.setText(Translator.getTranslation("delete"));
 
     }
 
@@ -114,8 +137,9 @@ public class MainMenuController implements Initializable, LoadableController {
 
     public void handleDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
+        ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(selectedCustomer);
         if (selectedCustomer != null) {
-            if (PopUpBox.displayConfirmation("Are you sure you would like to delete " + selectedCustomer.getName() + " from Customers")) {
+            if (PopUpBox.displayConfirmation("Are you sure you would like to delete " + selectedCustomer.getName() + " from Customers\n\nCustomer has " + customerAppointments.size() + " scheduled appointments")) {
                 UserDao.deleteCustomer(selectedCustomer);
                 /** repopulate table with newly updated customer table **/
                 customerTable.setItems(UserDao.getAllCustomers());
@@ -135,5 +159,69 @@ public class MainMenuController implements Initializable, LoadableController {
     }
 
     public void handleDeleteAppointment(ActionEvent actionEvent) {
+    }
+
+    public void allAppointmentsButton(ActionEvent actionEvent) {
+        try {
+            if (allAppointments.isSelected()) {
+                allAppointments.setSelected(true);
+                monthAppointments.setSelected(false);
+                weekAppointments.setSelected(false);
+                appointmentTable.setItems(UserDao.getAllAppointments());
+                allAppointments.setDisable(true);
+            }
+        } catch (Exception e) {
+            PopUpBox.displayError("Unable to show All appointments");
+        }
+    }
+
+    public void monthAppointmentsButton(ActionEvent actionEvent) {
+        try {
+            if (monthAppointments.isSelected()) {
+                allAppointments.setSelected(false);
+                monthAppointments.setSelected(true);
+                weekAppointments.setSelected(false);
+
+                allAppointments.setDisable(false);
+                monthAppointments.setDisable(true);
+                weekAppointments.setDisable(false);
+                int currentMonth = LocalDate.now().getMonthValue();
+                int currentYear = LocalDate.now().getYear();
+                ObservableList<Appointment> appointments = UserDao.getAllAppointments();
+                appointmentTable.setItems(appointments.filtered(appointment -> {
+                    LocalDate appointmentDate = LocalDate.parse(appointment.getStart());
+                    return (appointmentDate.getMonthValue() == currentMonth) && (appointmentDate.getYear() == currentYear);
+                }));
+            }
+        } catch (Exception e) {
+            PopUpBox.displayError("Unable to filter appointments by Month");
+        }
+    }
+
+    public void weekAppointmentsButton(ActionEvent actionEvent) {
+        try {
+            if (weekAppointments.isSelected()) {
+                allAppointments.setSelected(false);
+                monthAppointments.setSelected(false);
+                weekAppointments.setSelected(true);
+
+                allAppointments.setDisable(false);
+                monthAppointments.setDisable(false);
+                weekAppointments.setDisable(true);
+                Calendar currentDate = Calendar.getInstance();
+                Calendar appointmentDate = Calendar.getInstance();
+                currentDate.setTime(java.sql.Date.valueOf((LocalDate.now().toString())));
+                int currentYear = currentDate.getWeekYear();
+                int weekOfYear = currentDate.get(currentDate.WEEK_OF_YEAR);
+                System.out.println(weekOfYear);
+                ObservableList<Appointment> appointments = UserDao.getAllAppointments();
+                appointmentTable.setItems(appointments.filtered(appointment -> {
+                    appointmentDate.setTime(java.sql.Date.valueOf((appointment.getStart())));
+                    return (appointmentDate.getWeekYear() == currentYear) && (appointmentDate.get(appointmentDate.WEEK_OF_YEAR) == weekOfYear);
+                }));
+            }
+        } catch (Exception e) {
+            PopUpBox.displayError("Unable to filter appointments by Week");
+        }
     }
 }
