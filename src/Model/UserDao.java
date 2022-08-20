@@ -190,6 +190,28 @@ public class UserDao {
         JDBC.getPreparedStatement().executeUpdate();
     }
 
+    static public ObservableList<Contact> getAllContacts() {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT * FROM contacts;";
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Contact> contacts = observableArrayList();
+            while (results.next()) {
+                /** load each customer into customers list **/
+                int id = results.getInt("Contact_ID");
+                String name = results.getString("Contact_Name");
+                String email = results.getString("Email");
+                contacts.add(new Contact(id, name, email));
+            }
+            /** return customer observable list **/
+            return contacts;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
+    }
+
     static public User getLoggedInUser() {
         return loggedInUser;
     }

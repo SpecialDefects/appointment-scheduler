@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -152,7 +153,8 @@ public class MainMenuController implements Initializable, LoadableController {
     public void handleAppointmentTabSelect(Event event) {
     }
 
-    public void handleCreateAppointment(ActionEvent actionEvent) {
+    public void handleCreateAppointment(ActionEvent actionEvent) throws IOException {
+        ViewCreator.createView("createappointment", "CreateAppointment", 630, 430, actionEvent, this);
     }
 
     public void handleModifyAppointment(ActionEvent actionEvent) {
