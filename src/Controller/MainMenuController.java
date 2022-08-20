@@ -8,6 +8,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable, LoadableController {
@@ -26,6 +27,7 @@ public class MainMenuController implements Initializable, LoadableController {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        /** populate customers **/
         customerTable.setItems(UserDao.getAllCustomers());
         customerName.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -63,7 +65,10 @@ public class MainMenuController implements Initializable, LoadableController {
     public void handleModifyCustomer(ActionEvent actionEvent) {
     }
 
-    public void handleDeleteCustomer(ActionEvent actionEvent) {
+    public void handleDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
+        UserDao.deleteCustomer(selectedCustomer);
+        /** repopulate table with newly updated customer table **/
+        customerTable.setItems(UserDao.getAllCustomers());
     }
 }

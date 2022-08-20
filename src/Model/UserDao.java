@@ -104,4 +104,50 @@ public class UserDao {
         }
         return countries;
     }
+
+    public static void deleteCustomer(Customer customer) throws SQLException {
+        Connection conn = JDBC.getConnection();
+        /** check if customer has scheduled appointments **/
+        ObservableList<Appointment> appointments = getAllCustomerAppointments(customer);
+        /** delete appointments for customer **/
+        if (!appointments.isEmpty()) {
+            String statement = "DELETE FROM appointments WHERE Customer_ID = " + customer.getId();
+            JDBC.makePreparedStatement(statement, conn);
+            JDBC.getPreparedStatement().executeUpdate();
+        }
+
+        /** delete customer **/
+        String statement = "DELETE FROM customers WHERE Customer_ID = " + customer.getId();
+        JDBC.makePreparedStatement(statement, conn);
+        JDBC.getPreparedStatement().executeUpdate();
+    }
+
+    public static ObservableList<Appointment> getAllCustomerAppointments(Customer customer) {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT * FROM appointments WHERE Customer_ID = " + customer.getId();
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Appointment> appointments = observableArrayList();
+            while (results.next()) {
+                /** load each customer into customers list **/
+                int id = results.getInt("Appointment_ID");
+                String title = results.getString("Title");
+                String description = results.getString("Description");
+                String location = results.getString("Location");
+                String type = results.getString("Type");
+                Date start = results.getDate("Start");
+                Date end = results.getDate("End");
+                int customerId = results.getInt("Customer_ID");
+                int userId = results.getInt("User_ID");
+                int contactId = results.getInt("Contact_ID");
+                appointments.add(new Appointment(id, title, description, location, type, start, end, customerId, userId, contactId));
+            }
+            /** return customer observable list **/
+            return appointments;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
+    }
 }
