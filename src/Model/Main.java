@@ -1,6 +1,7 @@
 package Model;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +12,7 @@ import java.util.Locale;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/View/Login.fxml"));
         primaryStage.setTitle(Translator.getTranslation("login"));
         primaryStage.setScene(new Scene(root, 330, 400));
@@ -20,7 +21,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        Translator.setLocale(Locale.FRENCH);
+        Translator.setLocale(Locale.ENGLISH);
         JDBC.makeConnection();
         launch(args);
     }

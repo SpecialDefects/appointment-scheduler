@@ -87,12 +87,12 @@ public class CreateCustomerController implements Initializable, LoadableControll
         int division_id = ((Division) divisionPicker.getSelectionModel().getSelectedItem()).getId();
 
         UserDao.createCustomer(name, address, postalCode, phone, division_id, userCreating.getID());
-        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 600, 400, actionEvent, this, userCreating);
+        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userCreating);
     }
 
     /** return to mainmenu **/
     public void handleCancel(ActionEvent actionEvent) throws Exception {
-        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 600, 400, actionEvent, this, userCreating);
+        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userCreating);
     }
 
     /** filter division picker based on country picker selection **/

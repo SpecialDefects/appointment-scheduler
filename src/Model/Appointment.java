@@ -32,8 +32,8 @@ public class Appointment {
     public String getDescription() { return this.description; }
     public String getLocation() { return this.location; }
     public String getType() { return this.type; }
-    public Date getStart() { return this.start; }
-    public Date getEnd() { return this.end; }
+    public String getStart() { return this.start.toString(); }
+    public String getEnd() { return this.end.toString(); }
     public int getCustomerId() { return this.customerId; }
     public int getUserId() { return this.userId; }
     public int getContactId() { return this.contactId; }

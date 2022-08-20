@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Appointment;
+import Model.Customer;
 import Model.User;
 
 public interface LoadableController {

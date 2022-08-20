@@ -150,4 +150,27 @@ public class UserDao {
         }
         return observableArrayList();
     }
+    public static ObservableList<Appointment> getAllAppointments() throws SQLException {
+        Connection conn = JDBC.getConnection();
+        String statement = "SELECT * FROM appointments";
+        JDBC.makePreparedStatement(statement, conn);
+        ResultSet results = JDBC.getPreparedStatement().executeQuery();
+        ObservableList<Appointment> appointments = observableArrayList();
+        while (results.next()) {
+            /** load each division into divisions list **/
+            int id = results.getInt("Appointment_ID");
+            String title = results.getString("Title");
+            String description = results.getString("Description");
+            String location = results.getString("Location");
+            String type = results.getString("Type");
+            Date start = results.getDate("Start");
+            Date end = results.getDate("End");
+            int customerId = results.getInt("Customer_ID");
+            int userId = results.getInt("User_ID");
+            int contactId = results.getInt("Contact_ID");
+            appointments.add(new Appointment(id, title, description, location, type, start, end, customerId, userId, contactId));
+        }
+        return appointments;
+    }
+
 }

@@ -39,7 +39,7 @@ public class LoginController implements Initializable, LoadableController {
             String username = usernameField.getText();
             String password = passwordField.getText();
             User userLogin = UserDao.login(username, password);
-            ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 600, 400, actionEvent, this, userLogin);
+            ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userLogin);
         }
         catch (Exception e) {
             PopUpBox.displayError(e.getMessage());

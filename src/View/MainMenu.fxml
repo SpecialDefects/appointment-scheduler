@@ -10,36 +10,65 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainMenuController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainMenuController">
    <children>
-      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="500.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="customersTabLabel">
                <content>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ButtonBar layoutX="321.0" layoutY="317.0" prefHeight="40.0" prefWidth="200.0">
+                        <ButtonBar layoutX="620.0" layoutY="420.0" prefHeight="40.0" prefWidth="200.0">
                           <buttons>
                             <Button fx:id="addCustomerButton" mnemonicParsing="false" onAction="#handleCreateCustomer" />
                               <Button fx:id="modifyCustomerButton" mnemonicParsing="false" onAction="#handleModifyCustomer" />
                               <Button fx:id="deleteCustomerButton" mnemonicParsing="false" onAction="#handleDeleteCustomer" />
                           </buttons>
                         </ButtonBar>
-                        <TableView fx:id="customerTable" layoutY="7.0" maxHeight="326.0" prefHeight="308.0" prefWidth="600.0">
+                        <TableView fx:id="customerTable" maxHeight="400.0" prefHeight="400.0" prefWidth="900.0">
                           <columns>
                             <TableColumn fx:id="customerName" prefWidth="145.0" text="Name" />
-                            <TableColumn fx:id="customerAddress" minWidth="5.0" prefWidth="166.0" text="Address" />
-                              <TableColumn fx:id="customerPostalCode" minWidth="0.0" prefWidth="123.0" text="Postal Code" />
-                              <TableColumn fx:id="customerPhone" prefWidth="160.0" text="Phone Number" />
+                            <TableColumn fx:id="customerAddress" minWidth="5.0" prefWidth="394.0" text="Address" />
+                              <TableColumn fx:id="customerPostalCode" minWidth="0.0" prefWidth="148.0" text="Postal Code" />
+                              <TableColumn fx:id="customerPhone" prefWidth="212.0" text="Phone Number" />
                           </columns>
                         </TableView>
-                        <Label layoutX="20.0" layoutY="337.0" text="ID:" />
-                        <Label fx:id="userID" layoutX="68.0" layoutY="337.0" />
+                        <Label layoutX="15.0" layoutY="440.0" text="ID:" />
+                        <Label fx:id="userID" layoutX="45.0" layoutY="440.0" />
                      </children>
                   </Pane>
                </content>
             </Tab>
-          <Tab fx:id="appointmentsTabLabel" />
+          <Tab fx:id="appointmentsTabLabel" onSelectionChanged="#handleAppointmentTabSelect">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ButtonBar layoutX="620.0" layoutY="420.0" prefHeight="40.0" prefWidth="200.0">
+                           <buttons>
+                              <Button fx:id="createAppointmentButton" mnemonicParsing="false" onAction="#handleCreateAppointment" />
+                              <Button fx:id="modifyAppointmentButton" mnemonicParsing="false" onAction="#handleModifyAppointment" />
+                              <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteAppointment" />
+                           </buttons>
+                        </ButtonBar>
+                        <TableView fx:id="appointmentTable" maxHeight="408.0" prefHeight="400.0" prefWidth="900.0">
+                           <columns>
+                              <TableColumn fx:id="appointmentID" prefWidth="69.0" text="ID" />
+                              <TableColumn fx:id="appointmentTitle" minWidth="5.0" prefWidth="68.0" text="Title" />
+                              <TableColumn fx:id="appointmentDescription" minWidth="0.0" prefWidth="165.0" text="Description" />
+                              <TableColumn fx:id="appointmentLocation" minWidth="0.0" prefWidth="110.0" text="Location" />
+                              <TableColumn fx:id="appointmentContact" minWidth="0.0" prefWidth="106.0" text="Contact" />
+                              <TableColumn fx:id="appointmentType" minWidth="0.0" prefWidth="73.0" text="Type" />
+                              <TableColumn fx:id="appointmentStart" minWidth="1.0" prefWidth="72.0" text="Start" />
+                              <TableColumn fx:id="appointmentEnd" minWidth="0.0" prefWidth="72.0" text="End" />
+                              <TableColumn fx:id="appointmentCustomer" prefWidth="79.0" text="Customer" />
+                              <TableColumn fx:id="appointmentUser" prefWidth="85.0" text="User" />
+                           </columns>
+                        </TableView>
+                        <Label layoutX="15.0" layoutY="440.0" text="ID:" />
+                        <Label fx:id="userID1" layoutX="45.0" layoutY="440.0" />
+                     </children>
+                  </Pane>
+               </content></Tab>
         </tabs>
       </TabPane>
    </children>
