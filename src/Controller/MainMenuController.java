@@ -1,22 +1,26 @@
 package Controller;
 
-import Model.User;
-import Model.UserDao;
+import Model.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainMenuController implements Initializable {
+public class MainMenuController implements Initializable, LoadableController {
     public TableView customerTable;
     public TableColumn customerName;
     public TableColumn customerAddress;
     public TableColumn customerPostalCode;
     public TableColumn customerPhone;
+    public Button addCustomerButton;
+    public Button modifyCustomerButton;
+    public Button deleteCustomerButton;
+    public Tab customersTabLabel;
+    public Tab appointmentsTabLabel;
     public Label userID;
     private User user;
 
@@ -27,10 +31,35 @@ public class MainMenuController implements Initializable {
         customerAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         customerPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        customerName.setText(Translator.getTranslation("name"));
+        customerAddress.setText(Translator.getTranslation("address"));
+        customerPostalCode.setText(Translator.getTranslation("postalcode"));
+        customerPhone.setText(Translator.getTranslation("phone"));
+        addCustomerButton.setText(Translator.getTranslation("create"));
+        modifyCustomerButton.setText(Translator.getTranslation("modify"));
+        deleteCustomerButton.setText(Translator.getTranslation("delete"));
+        customersTabLabel.setText(Translator.getTranslation("customers"));
+        appointmentsTabLabel.setText(Translator.getTranslation("appointments"));
+
     }
 
-    public void loadUser(User userLogin) {
+    public void load(User userLogin) {
         this.user = userLogin;
         this.userID.setText(userLogin.getID().toString());
+    }
+
+    @Override
+    public void load(Appointment appointment) {
+
+    }
+
+    public void handleCreateCustomer(ActionEvent actionEvent) throws IOException {
+        ViewCreator.createView("createcustomer", "CreateCustomer", 600, 400, actionEvent, this);
+    }
+
+    public void handleModifyCustomer(ActionEvent actionEvent) {
+    }
+
+    public void handleDeleteCustomer(ActionEvent actionEvent) {
     }
 }
