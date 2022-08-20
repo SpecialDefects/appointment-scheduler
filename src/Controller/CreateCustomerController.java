@@ -33,7 +33,6 @@ public class CreateCustomerController implements Initializable, LoadableControll
     public Label phoneLabel;
     public Label countryLabel;
     public Label divisionLabel;
-    private User userCreating;
 
     private ObservableList<Country> countries;
     private ObservableList<Division> divisions;
@@ -69,12 +68,12 @@ public class CreateCustomerController implements Initializable, LoadableControll
     }
 
     @Override
-    public void load(User user) {
-        userCreating = user;
+    public void load(Appointment appointment) {
+
     }
 
     @Override
-    public void load(Appointment appointment) {
+    public void load(Customer customer) {
 
     }
 
@@ -86,13 +85,13 @@ public class CreateCustomerController implements Initializable, LoadableControll
         String phone = phoneTextField.getText();
         int division_id = ((Division) divisionPicker.getSelectionModel().getSelectedItem()).getId();
 
-        UserDao.createCustomer(name, address, postalCode, phone, division_id, userCreating.getID());
-        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userCreating);
+        UserDao.createCustomer(name, address, postalCode, phone, division_id, UserDao.getLoggedInUser().getID());
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
     /** return to mainmenu **/
     public void handleCancel(ActionEvent actionEvent) throws Exception {
-        ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userCreating);
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
     /** filter division picker based on country picker selection **/

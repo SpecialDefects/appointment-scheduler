@@ -38,8 +38,8 @@ public class LoginController implements Initializable, LoadableController {
         try {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            User userLogin = UserDao.login(username, password);
-            ViewCreator.createViewWithPayload("mainmenu", "MainMenu", 900, 500, actionEvent, this, userLogin);
+            UserDao.login(username, password);
+            ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
         }
         catch (Exception e) {
             PopUpBox.displayError(e.getMessage());
@@ -47,12 +47,12 @@ public class LoginController implements Initializable, LoadableController {
     }
 
     @Override
-    public void load(User user) {
+    public void load(Appointment appointment) {
 
     }
 
     @Override
-    public void load(Appointment appointment) {
+    public void load(Customer customer) {
 
     }
 }

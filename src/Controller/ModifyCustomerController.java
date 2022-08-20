@@ -3,6 +3,7 @@ package Controller;
 import Model.Appointment;
 import Model.Customer;
 import Model.User;
+import Model.UserDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -30,11 +31,7 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     public Label phoneLabel;
     public Label countryLabel;
     public Label divisionLabel;
-
-    @Override
-    public void load(User user) {
-        
-    }
+    public Customer customer;
 
     @Override
     public void load(Appointment appointment) {
@@ -42,8 +39,17 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void load(Customer customer) {
+        this.customer = customer;
+    }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        idTextField.setText(Integer.toString(customer.getId()));
+        nameTextField.setText(customer.getName());
+        addressTextField.setText(customer.getAddress());
+        postalTextField.setText(customer.getPostalCode());
+        phoneTextField.setText(customer.getPhone());
     }
 
     public void handleSave(ActionEvent actionEvent) {

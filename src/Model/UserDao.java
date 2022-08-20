@@ -1,6 +1,5 @@
 package Model;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
@@ -9,7 +8,9 @@ import static javafx.collections.FXCollections.*;
 
 public class UserDao {
 
-    public static User login(String userName, String password) throws Exception {
+    static User loggedInUser;
+
+    public static void login(String userName, String password) throws Exception {
 
         try {
             Connection conn = JDBC.getConnection();
@@ -25,13 +26,13 @@ public class UserDao {
                 Timestamp lastUpdated = results.getTimestamp("Last_Update");
                 String lastUpdatedBy = results.getString("Last_Updated_By");
 
-                User newUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
-                return newUser;
+                loggedInUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
+            } else {
+                throw new Exception(Translator.getTranslation("invalid"));
             }
         } catch (Exception e) {
             throw new Exception(Translator.getTranslation("invalid"));
         }
-        throw new Exception(Translator.getTranslation("invalid"));
     }
 
     public static ObservableList<Customer> getAllCustomers() {
@@ -173,4 +174,7 @@ public class UserDao {
         return appointments;
     }
 
+    static public User getLoggedInUser() {
+        return loggedInUser;
+    }
 }

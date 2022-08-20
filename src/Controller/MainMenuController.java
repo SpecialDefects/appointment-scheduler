@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -38,7 +37,6 @@ public class MainMenuController implements Initializable, LoadableController {
     public TableColumn appointmentEnd;
     public TableColumn appointmentCustomer;
     public TableColumn appointmentUser;
-    private User user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -87,12 +85,8 @@ public class MainMenuController implements Initializable, LoadableController {
         /** populate tab text based on locale **/
         customersTabLabel.setText(Translator.getTranslation("customers"));
         appointmentsTabLabel.setText(Translator.getTranslation("appointments"));
+        userID.setText(Integer.toString(UserDao.getLoggedInUser().getID()));
 
-    }
-
-    public void load(User userLogin) {
-        this.user = userLogin;
-        this.userID.setText(userLogin.getID().toString());
     }
 
     @Override
@@ -100,20 +94,33 @@ public class MainMenuController implements Initializable, LoadableController {
 
     }
 
+    @Override
+    public void load(Customer customer) {
+
+    }
+
     public void handleCreateCustomer(ActionEvent actionEvent) throws Exception {
-        ViewCreator.createViewWithPayload("createcustomer", "CreateCustomer", 600, 400, actionEvent, this, user);
+        ViewCreator.createView("createcustomer", "CreateCustomer", 600, 400, actionEvent, this);
     }
 
     public void handleModifyCustomer(ActionEvent actionEvent) throws Exception {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
-        ViewCreator.createViewWithPayload("modifycustomer", "ModifyCustomer", 600, 400, actionEvent, this, user);
+        if (selectedCustomer != null) {
+            ViewCreator.createViewWithCustomer("modifycustomer", "ModifyCustomer", 600, 400, actionEvent, this, selectedCustomer);
+        } else {
+            PopUpBox.displayError("You must select a customer to modify");
+        }
     }
 
     public void handleDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
-        UserDao.deleteCustomer(selectedCustomer);
-        /** repopulate table with newly updated customer table **/
-        customerTable.setItems(UserDao.getAllCustomers());
+        if (selectedCustomer != null) {
+            UserDao.deleteCustomer(selectedCustomer);
+            /** repopulate table with newly updated customer table **/
+            customerTable.setItems(UserDao.getAllCustomers());
+        } else {
+            PopUpBox.displayError("You must select a customer to delete");
+        }
     }
 
     public void handleAppointmentTabSelect(Event event) {

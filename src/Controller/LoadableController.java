@@ -5,6 +5,6 @@ import Model.Customer;
 import Model.User;
 
 public interface LoadableController {
-    public void load(User user);
     public void load(Appointment appointment);
+    void load(Customer customer);
 }
