@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 
 import java.sql.*;
 
+import static javafx.collections.FXCollections.*;
+
 public class UserDao {
 
     public static User login(String userName, String password) throws Exception {
@@ -38,35 +40,68 @@ public class UserDao {
             String statement = "SELECT * FROM customers";
             JDBC.makePreparedStatement(statement, conn);
             ResultSet results = JDBC.getPreparedStatement().executeQuery();
-            ObservableList<Customer> customers = FXCollections.observableArrayList();
+            ObservableList<Customer> customers = observableArrayList();
             while (results.next()) {
                 /** load each customer into customers list **/
+                int customerId = results.getInt("Customer_ID");
                 String customerName = results.getString("Customer_Name");
                 String customerAddress = results.getString("Address");
                 String customerPostalCode = results.getString("Postal_Code");
                 String customerPhone = results.getString("Phone");
-                customers.add(new Customer(customerName, customerAddress, customerPostalCode, customerPhone));
+                int customerDivision = results.getInt("Division_ID");
+                customers.add(new Customer(customerId, customerName, customerAddress, customerPostalCode, customerPhone, customerDivision));
             }
             /** return customer observable list **/
             return customers;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return FXCollections.observableArrayList();
+        return observableArrayList();
     }
 
-    public void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
+    public static void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
         try {
             Connection conn = JDBC.getConnection();
-            Date currentTime = (Date) new java.util.Date();
+            Date currentTime = new java.sql.Date(new java.util.Date().getTime());
             String statement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Create_Date," +
-                               "Created_By, Last_Update, Last_Updated_By, Divison_ID) " +
-                               "VALUES (" + name + "," + address + "," + postalCode + "," + Phone + "," + currentTime + "," + user + "," +
-                               currentTime + "," + user + "," + division + ");";
+                               "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
+                               "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
+                               currentTime + "'," + user + "," + division + ");";
             JDBC.makePreparedStatement(statement, conn);
-            JDBC.getPreparedStatement().executeQuery();
+            JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public static ObservableList<Division> getAllDivisions() throws SQLException {
+        Connection conn = JDBC.getConnection();
+        String statement = "SELECT * FROM first_level_divisions";
+        JDBC.makePreparedStatement(statement, conn);
+        ResultSet results = JDBC.getPreparedStatement().executeQuery();
+        ObservableList<Division> divisions = observableArrayList();
+        while (results.next()) {
+            /** load each division into divisions list **/
+            int id = results.getInt("Division_ID");
+            String name = results.getString("Division");
+            int countryId = results.getInt("Country_ID");
+            divisions.add(new Division(id, name, countryId));
+        }
+        return divisions;
+    }
+
+    public static ObservableList<Country> getAllCountries() throws SQLException {
+        Connection conn = JDBC.getConnection();
+        String statement = "SELECT * FROM countries";
+        JDBC.makePreparedStatement(statement, conn);
+        ResultSet results = JDBC.getPreparedStatement().executeQuery();
+        ObservableList<Country> countries = observableArrayList();
+        while (results.next()) {
+            /** load each division into divisions list **/
+            int id = results.getInt("Country_ID");
+            String name = results.getString("Country");
+            countries.add(new Country(id, name));
+        }
+        return countries;
     }
 }

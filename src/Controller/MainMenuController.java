@@ -56,8 +56,8 @@ public class MainMenuController implements Initializable, LoadableController {
 
     }
 
-    public void handleCreateCustomer(ActionEvent actionEvent) throws IOException {
-        ViewCreator.createView("createcustomer", "CreateCustomer", 600, 400, actionEvent, this);
+    public void handleCreateCustomer(ActionEvent actionEvent) throws Exception {
+        ViewCreator.createViewWithPayload("createcustomer", "CreateCustomer", 600, 400, actionEvent, this, user);
     }
 
     public void handleModifyCustomer(ActionEvent actionEvent) {
