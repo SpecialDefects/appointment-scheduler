@@ -31,13 +31,16 @@ public class MainMenuController implements Initializable, LoadableController {
         customerAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         customerPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        /** populate column names based on locale **/
         customerName.setText(Translator.getTranslation("name"));
         customerAddress.setText(Translator.getTranslation("address"));
         customerPostalCode.setText(Translator.getTranslation("postalcode"));
         customerPhone.setText(Translator.getTranslation("phone"));
+        /** populate button text based on locale **/
         addCustomerButton.setText(Translator.getTranslation("create"));
         modifyCustomerButton.setText(Translator.getTranslation("modify"));
         deleteCustomerButton.setText(Translator.getTranslation("delete"));
+        /** populate tab text based on locale **/
         customersTabLabel.setText(Translator.getTranslation("customers"));
         appointmentsTabLabel.setText(Translator.getTranslation("appointments"));
 

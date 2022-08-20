@@ -54,4 +54,19 @@ public class UserDao {
         }
         return FXCollections.observableArrayList();
     }
+
+    public void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
+        try {
+            Connection conn = JDBC.getConnection();
+            Date currentTime = (Date) new java.util.Date();
+            String statement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Create_Date," +
+                               "Created_By, Last_Update, Last_Updated_By, Divison_ID) " +
+                               "VALUES (" + name + "," + address + "," + postalCode + "," + Phone + "," + currentTime + "," + user + "," +
+                               currentTime + "," + user + "," + division + ");";
+            JDBC.makePreparedStatement(statement, conn);
+            JDBC.getPreparedStatement().executeQuery();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 }
