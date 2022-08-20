@@ -33,6 +33,9 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     public Label countryLabel;
     public Label divisionLabel;
 
+    public ObservableList<Country> countries;
+    public ObservableList<Division> divisions;
+
     @Override
     public void load(Appointment appointment) {
 
@@ -41,8 +44,8 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     @Override
     public void load(Customer customer) {
         try {
-            ObservableList<Division> divisions = UserDao.getAllDivisions();
-            ObservableList<Country> countries = UserDao.getAllCountries();
+            divisions = UserDao.getAllDivisions();
+            countries = UserDao.getAllCountries();
             Division customerDivision = divisions.filtered(division -> division.getId() == customer.getDivisionId()).get(0);
             Country customerCountry = countries.filtered(country -> country.getId() == customerDivision.getCountryId()).get(0);
             idTextField.setText(Integer.toString(customer.getId()));
@@ -52,8 +55,18 @@ public class ModifyCustomerController implements Initializable, LoadableControll
             phoneTextField.setText(customer.getPhone());
             countryPicker.setItems(countries);
             divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == customerCountry.getId()));
-            countryPicker.setValue(customerCountry);
             divisionPicker.setValue(customerDivision);
+            countryPicker.setValue(customerCountry);
+            Country pickedCountry = (Country) countryPicker.getSelectionModel().getSelectedItem();
+            if (pickedCountry.getId() == 1) {
+                divisionLabel.setText(Translator.getTranslation("state"));
+            } else if (pickedCountry.getId() == 2) {
+                divisionLabel.setText(Translator.getTranslation("nation"));
+            }
+            else {
+                divisionLabel.setText(Translator.getTranslation("province"));
+            }
+
         } catch (Exception e) {
             PopUpBox.displayError("Modified Customer failed to load");
         }
@@ -62,18 +75,34 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        saveButton.setText(Translator.getTranslation("save"));
+        cancelButton.setText(Translator.getTranslation("cancel"));
     }
 
-    public void handleSave(ActionEvent actionEvent) throws SQLException {
+    public void handleSave(ActionEvent actionEvent) throws SQLException, IOException {
         int id = Integer.parseInt(idTextField.getText());
         String name = nameTextField.getText();
         String address = addressTextField.getText();
         String postal = postalTextField.getText();
         int division = ((Division) divisionPicker.getValue()).getId();
         UserDao.updateCustomer(id, name, address, postal, division);
+
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
     public void handleCountryPicker(ActionEvent actionEvent) {
+        Country pickedCountry = (Country) countryPicker.getSelectionModel().getSelectedItem();
+        if (pickedCountry != null) {
+            if (pickedCountry.getId() == 1) {
+                divisionLabel.setText(Translator.getTranslation("state"));
+            } else if (pickedCountry.getId() == 2) {
+                divisionLabel.setText(Translator.getTranslation("nation"));
+            }
+            else {
+                divisionLabel.setText(Translator.getTranslation("province"));
+            }
+            divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == pickedCountry.getId()));
+        }
     }
 
     public void handleCancel(ActionEvent actionEvent) throws IOException {

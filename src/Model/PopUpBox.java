@@ -15,10 +15,15 @@ public class PopUpBox {
         alert.showAndWait();
     }
 
-    private void displayConfirmation(String message) {
+    public static boolean displayConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(Translator.getTranslation("confirmation"));
         alert.setContentText(message);
         alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

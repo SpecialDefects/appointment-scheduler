@@ -97,13 +97,24 @@ public class CreateCustomerController implements Initializable, LoadableControll
     /** filter division picker based on country picker selection **/
     public void handleCountryPicker(ActionEvent actionEvent) throws Exception {
         Country pickedCountry = (Country) countryPicker.getSelectionModel().getSelectedItem();
-        /** if divisionlabel and picker are hidden, unhide them **/
-        if (divisionLabel.getOpacity() == 0) {
-            divisionLabel.setOpacity(1);
-            divisionPicker.setOpacity(1);
+        if (pickedCountry != null) {
+            /** if divisionlabel and picker are hidden, unhide them **/
+            if (divisionLabel.getOpacity() == 0) {
+                divisionLabel.setOpacity(1);
+                divisionPicker.setOpacity(1);
+            }
+            if (pickedCountry.getId() == 1) {
+                divisionLabel.setText(Translator.getTranslation("state"));
+            } else if (pickedCountry.getId() == 2) {
+                divisionLabel.setText(Translator.getTranslation("nation"));
+            }
+            else {
+                divisionLabel.setText(Translator.getTranslation("province"));
+            }
+            /** filter only division that belong to the currently picked country **/
+            /** LAMBDA #1 **/
+            divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == pickedCountry.getId()));
         }
-        /** filter only division that belong to the currently picked country **/
-        /** LAMBDA #1 **/
-        divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == pickedCountry.getId()));
+
     }
 }
