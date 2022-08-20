@@ -1,9 +1,8 @@
 package Controller;
 
-import Model.Appointment;
-import Model.Customer;
-import Model.User;
-import Model.UserDao;
+import Model.*;
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ModifyCustomerController implements Initializable, LoadableController {
@@ -31,7 +31,6 @@ public class ModifyCustomerController implements Initializable, LoadableControll
     public Label phoneLabel;
     public Label countryLabel;
     public Label divisionLabel;
-    public Customer customer;
 
     @Override
     public void load(Appointment appointment) {
@@ -40,16 +39,28 @@ public class ModifyCustomerController implements Initializable, LoadableControll
 
     @Override
     public void load(Customer customer) {
-        this.customer = customer;
+        try {
+            ObservableList<Division> divisions = UserDao.getAllDivisions();
+            ObservableList<Country> countries = UserDao.getAllCountries();
+            Division customerDivision = divisions.filtered(division -> division.getId() == customer.getDivisionId()).get(0);
+            Country customerCountry = countries.filtered(country -> country.getId() == customerDivision.getCountryId()).get(0);
+            idTextField.setText(Integer.toString(customer.getId()));
+            nameTextField.setText(customer.getName());
+            addressTextField.setText(customer.getAddress());
+            postalTextField.setText(customer.getPostalCode());
+            phoneTextField.setText(customer.getPhone());
+            countryPicker.setItems(countries);
+            divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == customerCountry.getId()));
+            countryPicker.setValue(customerCountry);
+            divisionPicker.setValue(customerDivision);
+        } catch (Exception e) {
+            PopUpBox.displayError("Modified Customer failed to load");
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        idTextField.setText(Integer.toString(customer.getId()));
-        nameTextField.setText(customer.getName());
-        addressTextField.setText(customer.getAddress());
-        postalTextField.setText(customer.getPostalCode());
-        phoneTextField.setText(customer.getPhone());
+
     }
 
     public void handleSave(ActionEvent actionEvent) {

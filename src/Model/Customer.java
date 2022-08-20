@@ -34,4 +34,6 @@ public class Customer {
     public String getPhone() {
         return this.phone;
     }
+
+    public int getDivisionId() { return this.divisionId; }
 }
