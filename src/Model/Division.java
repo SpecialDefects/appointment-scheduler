@@ -14,4 +14,5 @@ public class Division {
     public int getId() { return this.id; }
     public String getName() { return this.name; }
     public int getCountryId() { return this.countryId; }
+    public String toString() { return this.name; }
 }

@@ -64,5 +64,6 @@ public class MainMenuController implements Initializable, LoadableController {
     }
 
     public void handleDeleteCustomer(ActionEvent actionEvent) {
+        Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
     }
 }
