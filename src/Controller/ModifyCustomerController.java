@@ -10,6 +10,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -63,12 +64,19 @@ public class ModifyCustomerController implements Initializable, LoadableControll
 
     }
 
-    public void handleSave(ActionEvent actionEvent) {
+    public void handleSave(ActionEvent actionEvent) throws SQLException {
+        int id = Integer.parseInt(idTextField.getText());
+        String name = nameTextField.getText();
+        String address = addressTextField.getText();
+        String postal = postalTextField.getText();
+        int division = ((Division) divisionPicker.getValue()).getId();
+        UserDao.updateCustomer(id, name, address, postal, division);
     }
 
     public void handleCountryPicker(ActionEvent actionEvent) {
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    public void handleCancel(ActionEvent actionEvent) throws IOException {
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 }

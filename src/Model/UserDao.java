@@ -174,6 +174,22 @@ public class UserDao {
         return appointments;
     }
 
+    static public void updateCustomer(int id, String name, String address, String postal, int division) throws SQLException {
+        Connection conn = JDBC.getConnection();
+        Date currentTime = new java.sql.Date(new java.util.Date().getTime());
+        String statement = "UPDATE customers " +
+                           "SET Customer_Name='" + name + "', " +
+                           "Address='" + address + "', " +
+                            "Postal_Code='" + postal + "', " +
+                            "Division_ID=" + division + ", " +
+                            "Last_Update='" + currentTime + "', " +
+                            "Last_Updated_By=" + loggedInUser.getID() + " " +
+                            "WHERE Customer_ID=" + id + ";";
+        System.out.println(statement);
+        JDBC.makePreparedStatement(statement, conn);
+        JDBC.getPreparedStatement().executeUpdate();
+    }
+
     static public User getLoggedInUser() {
         return loggedInUser;
     }
