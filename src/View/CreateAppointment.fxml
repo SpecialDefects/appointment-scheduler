@@ -17,10 +17,10 @@
             <Button fx:id="cancelButton" layoutX="135.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleCancel" />
         </buttons>
       </ButtonBar>
-      <TextField fx:id="phoneTextField" layoutX="60.0" layoutY="260.0" />
+      <TextField fx:id="customerTextField" layoutX="60.0" layoutY="260.0" />
       <TextField fx:id="titleTextField" layoutX="60.0" layoutY="110.0" />
-      <TextField fx:id="addressTextField" layoutX="60.0" layoutY="160.0" />
-      <TextField fx:id="postalTextField" layoutX="60.0" layoutY="210.0" />
+      <TextField fx:id="locationTextField" layoutX="60.0" layoutY="160.0" />
+      <TextField fx:id="typeTextField" layoutX="60.0" layoutY="210.0" />
       <Label fx:id="idLabel" layoutX="60.0" layoutY="40.0" text="ID" />
       <TextField fx:id="idTextField" disable="true" layoutX="59.0" layoutY="60.0" />
       <Label fx:id="titleLabel" layoutX="60.0" layoutY="90.0" text="Title" />

@@ -1,14 +1,16 @@
 package Controller;
 
-import Model.Appointment;
-import Model.Customer;
-import Model.Translator;
-import Model.UserDao;
+import Model.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class CreateAppointmentController implements Initializable, LoadableController {
@@ -16,10 +18,10 @@ public class CreateAppointmentController implements Initializable, LoadableContr
     public Button cancelButton;
     public Button createButton;
 
-    public TextField phoneTextField;
     public TextField titleTextField;
-    public TextField addressTextField;
-    public TextField postalTextField;
+    public TextField customerTextField;
+    public TextField locationTextField;
+    public TextField typeTextField;
     public TextField idTextField;
     public TextField userTextField;
 
@@ -45,6 +47,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
     public ChoiceBox endTimePicker;
     public ChoiceBox contactPicker;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -62,7 +65,21 @@ public class CreateAppointmentController implements Initializable, LoadableContr
 
         createButton.setText(Translator.getTranslation("create"));
         cancelButton.setText(Translator.getTranslation("cancel"));
+
         contactPicker.setItems(UserDao.getAllContacts());
+
+        ObservableList<String> hours = FXCollections.observableArrayList();
+        ObservableList<String> minutes = FXCollections.observableArrayList();
+        hours.addAll("08", "09", "10", "11", "12", "13", "14", "15", "16");
+        minutes.addAll("00", "15", "30", "45");
+        ObservableList<String> times = FXCollections.observableArrayList();
+        for (String hour : hours) {
+            for (String minute : minutes) {
+                times.add(hour + ":" + minute);
+            }
+        }
+        startTimePicker.setItems(times);
+        endTimePicker.setItems(times);
     }
 
     @Override
@@ -75,9 +92,75 @@ public class CreateAppointmentController implements Initializable, LoadableContr
 
     }
 
-    public void handleCreate(ActionEvent actionEvent) {
+    public void handleCreate(ActionEvent actionEvent) throws Exception {
+        String title;
+        String type;
+        String description;
+        String location;
+        int customerId;
+        int userId;
+        int contact;
+        LocalDateTime startDateTime;
+        LocalDateTime endDateTime;
+        try {
+            title = titleTextField.getText();
+        } catch (Exception e) {
+            throw new Exception("titleblank");
+        }
+        try {
+            type = typeTextField.getText();
+        } catch (Exception e) {
+            throw new Exception("typeblank");
+        }
+        try {
+            description = descriptionTextArea.getText();
+        } catch (Exception e) {
+            throw new Exception("descriptionblank");
+        }
+        try {
+            location = locationTextField.getText();
+        } catch (Exception e) {
+            throw new Exception("locationblank");
+        }
+        try {
+            customerId = Integer.parseInt(customerTextField.getText());
+        } catch (Exception e) {
+            throw new Exception("customerblank");
+        }
+        try {
+            userId = Integer.parseInt(userTextField.getText());
+        } catch (Exception e) {
+            throw new Exception("userblank");
+        }
+        try {
+            contact = ((Contact) contactPicker.getValue()).getId();
+        } catch (Exception e) {
+            throw new Exception("contactblank");
+        }
+        try {
+            String startDate = startDatePicker.getValue().toString();
+            String startTime = startTimePicker.getValue().toString();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter);
+        } catch (Exception e) {
+            throw new Exception("starttimeblank");
+        }
+        try {
+            String endDate = endDatePicker.getValue().toString();
+            String endTime = endTimePicker.getValue().toString();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter);
+        } catch (Exception e) {
+            throw new Exception("endtimeblank");
+        }
+        Appointment newAppointment = new Appointment(title, description, location, type,
+                                         startDateTime,
+                                         endDateTime,
+                                         customerId, userId, contact);
+        UserDao.createAppointment(newAppointment);
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    public void handleCancel(ActionEvent actionEvent) throws IOException {
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 }

@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -56,11 +57,7 @@ public class MainMenuController implements Initializable, LoadableController {
         customerPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         /** populate appointments **/
-        try {
-            appointmentTable.setItems(UserDao.getAllAppointments());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        appointmentTable.setItems(UserDao.getAllAppointments());
         appointmentID.setCellValueFactory(new PropertyValueFactory<>("id"));
         appointmentTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         appointmentDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
