@@ -158,6 +158,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                                          endDateTime,
                                          customerId, userId, contact);
         UserDao.createAppointment(newAppointment);
+        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
     public void handleCancel(ActionEvent actionEvent) throws IOException {

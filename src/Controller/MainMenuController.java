@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -158,6 +160,15 @@ public class MainMenuController implements Initializable, LoadableController {
     }
 
     public void handleDeleteAppointment(ActionEvent actionEvent) {
+        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        UserDao.deleteAppointment(selectedAppointment);
+        if (allAppointments.isSelected()) {
+            appointmentTable.setItems(UserDao.getAllAppointments());
+        } else if (monthAppointments.isSelected()) {
+            filterAppointmentsMonth();
+        } else if (weekAppointments.isSelected()) {
+            filterAppointmentsWeek();
+        }
     }
 
     public void allAppointmentsButton(ActionEvent actionEvent) {
@@ -174,6 +185,27 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    public void filterAppointmentsMonth() {
+        int currentMonth = LocalDate.now().getMonthValue();
+        int currentYear = LocalDate.now().getYear();
+        ObservableList<Appointment> appointments = UserDao.getAllAppointments();
+        appointmentTable.setItems(appointments.filtered(appointment -> {
+            LocalDateTime appointmentDate = LocalDateTime.parse(appointment.getStart());
+            return (appointmentDate.getMonthValue() == currentMonth) && (appointmentDate.getYear() == currentYear);
+        }));
+    }
+
+    public void filterAppointmentsWeek() {
+        LocalDate currentDate = LocalDate.now();
+        int weekOfYear = currentDate.get(WeekFields.ISO.weekOfWeekBasedYear());
+        int currentYear = currentDate.getYear();
+        ObservableList<Appointment> appointments = UserDao.getAllAppointments();
+        appointmentTable.setItems(appointments.filtered(appointment -> {
+            LocalDate appointmentDate = LocalDateTime.parse(appointment.getStart()).toLocalDate();
+            return (appointmentDate.getYear() == currentYear) && (appointmentDate.get(WeekFields.ISO.weekOfWeekBasedYear()) == weekOfYear);
+        }));
+    }
+
     public void monthAppointmentsButton(ActionEvent actionEvent) {
         try {
             if (monthAppointments.isSelected()) {
@@ -184,13 +216,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 allAppointments.setDisable(false);
                 monthAppointments.setDisable(true);
                 weekAppointments.setDisable(false);
-                int currentMonth = LocalDate.now().getMonthValue();
-                int currentYear = LocalDate.now().getYear();
-                ObservableList<Appointment> appointments = UserDao.getAllAppointments();
-                appointmentTable.setItems(appointments.filtered(appointment -> {
-                    LocalDate appointmentDate = LocalDate.parse(appointment.getStart());
-                    return (appointmentDate.getMonthValue() == currentMonth) && (appointmentDate.getYear() == currentYear);
-                }));
+                filterAppointmentsMonth();
             }
         } catch (Exception e) {
             PopUpBox.displayError("Unable to filter appointments by Month");
@@ -207,17 +233,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 allAppointments.setDisable(false);
                 monthAppointments.setDisable(false);
                 weekAppointments.setDisable(true);
-                Calendar currentDate = Calendar.getInstance();
-                Calendar appointmentDate = Calendar.getInstance();
-                currentDate.setTime(java.sql.Date.valueOf((LocalDate.now().toString())));
-                int currentYear = currentDate.getWeekYear();
-                int weekOfYear = currentDate.get(currentDate.WEEK_OF_YEAR);
-                System.out.println(weekOfYear);
-                ObservableList<Appointment> appointments = UserDao.getAllAppointments();
-                appointmentTable.setItems(appointments.filtered(appointment -> {
-                    appointmentDate.setTime(java.sql.Date.valueOf((appointment.getStart())));
-                    return (appointmentDate.getWeekYear() == currentYear) && (appointmentDate.get(appointmentDate.WEEK_OF_YEAR) == weekOfYear);
-                }));
+                filterAppointmentsWeek();
             }
         } catch (Exception e) {
             PopUpBox.displayError("Unable to filter appointments by Week");

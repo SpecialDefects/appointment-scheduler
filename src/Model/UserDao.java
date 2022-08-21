@@ -67,9 +67,9 @@ public class UserDao {
             Connection conn = JDBC.getConnection();
             Date currentTime = new java.sql.Date(new java.util.Date().getTime());
             String statement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Create_Date," +
-                               "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
-                               "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
-                               currentTime + "'," + user + "," + division + ");";
+                    "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
+                    "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
+                    currentTime + "'," + user + "," + division + ");";
             JDBC.makePreparedStatement(statement, conn);
             JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
@@ -153,6 +153,7 @@ public class UserDao {
         }
         return observableArrayList();
     }
+
     public static ObservableList<Appointment> getAllAppointments() {
         ObservableList<Appointment> appointments = observableArrayList();
         try {
@@ -185,13 +186,13 @@ public class UserDao {
         Connection conn = JDBC.getConnection();
         Timestamp currentTime = Timestamp.from(Instant.now());
         String statement = "UPDATE customers " +
-                           "SET Customer_Name='" + name + "', " +
-                           "Address='" + address + "', " +
-                            "Postal_Code='" + postal + "', " +
-                            "Division_ID=" + division + ", " +
-                            "Last_Update='" + currentTime + "', " +
-                            "Last_Updated_By=" + loggedInUser.getID() + " " +
-                            "WHERE Customer_ID=" + id + ";";
+                "SET Customer_Name='" + name + "', " +
+                "Address='" + address + "', " +
+                "Postal_Code='" + postal + "', " +
+                "Division_ID=" + division + ", " +
+                "Last_Update='" + currentTime + "', " +
+                "Last_Updated_By=" + loggedInUser.getID() + " " +
+                "WHERE Customer_ID=" + id + ";";
         System.out.println(statement);
         JDBC.makePreparedStatement(statement, conn);
         JDBC.getPreparedStatement().executeUpdate();
@@ -234,6 +235,17 @@ public class UserDao {
             JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    public static void deleteAppointment(Appointment appointment) {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "DELETE FROM appointments WHERE Appointment_ID = " + appointment.getId();
+            JDBC.makePreparedStatement(statement, conn);
+            JDBC.getPreparedStatement().executeUpdate();
+        } catch (Exception e) {
+            PopUpBox.displayError("invalid");
         }
     }
 
