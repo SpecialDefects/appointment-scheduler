@@ -68,7 +68,7 @@ public class ModifyCustomerController implements Initializable, LoadableControll
             }
 
         } catch (Exception e) {
-            PopUpBox.displayError("Modified Customer failed to load");
+            PopUpBox.displayError("errormodifiedcustomer");
         }
     }
 

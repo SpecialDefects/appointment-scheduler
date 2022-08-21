@@ -34,7 +34,7 @@ public class LoginController implements Initializable, LoadableController {
         userLocation.setText(zone.getId());
     }
 
-    public void handleLogin(ActionEvent actionEvent) throws SQLException {
+    public void handleLogin(ActionEvent actionEvent) {
         try {
             String username = usernameField.getText();
             String password = passwordField.getText();
@@ -42,7 +42,7 @@ public class LoginController implements Initializable, LoadableController {
             ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
         }
         catch (Exception e) {
-            PopUpBox.displayError(e.getMessage());
+            PopUpBox.displayError("invalid");
         }
     }
 

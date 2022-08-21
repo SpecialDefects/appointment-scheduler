@@ -105,37 +105,37 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         try {
             title = titleTextField.getText();
         } catch (Exception e) {
-            throw new Exception("titleblank");
+            throw new Exception("titleerror");
         }
         try {
             type = typeTextField.getText();
         } catch (Exception e) {
-            throw new Exception("typeblank");
+            throw new Exception("typeerror");
         }
         try {
             description = descriptionTextArea.getText();
         } catch (Exception e) {
-            throw new Exception("descriptionblank");
+            throw new Exception("descriptionerror");
         }
         try {
             location = locationTextField.getText();
         } catch (Exception e) {
-            throw new Exception("locationblank");
+            throw new Exception("locationerror");
         }
         try {
             customerId = Integer.parseInt(customerTextField.getText());
         } catch (Exception e) {
-            throw new Exception("customerblank");
+            throw new Exception("customererror");
         }
         try {
             userId = Integer.parseInt(userTextField.getText());
         } catch (Exception e) {
-            throw new Exception("userblank");
+            throw new Exception("usererror");
         }
         try {
             contact = ((Contact) contactPicker.getValue()).getId();
         } catch (Exception e) {
-            throw new Exception("contactblank");
+            throw new Exception("contacterror");
         }
         try {
             String startDate = startDatePicker.getValue().toString();
@@ -143,7 +143,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter);
         } catch (Exception e) {
-            throw new Exception("starttimeblank");
+            throw new Exception("starttimeerror");
         }
         try {
             String endDate = endDatePicker.getValue().toString();
@@ -151,7 +151,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter);
         } catch (Exception e) {
-            throw new Exception("endtimeblank");
+            throw new Exception("endtimeerror");
         }
         if (endDateTime.isBefore(startDateTime)) {
             throw new Exception("endtimebefore");

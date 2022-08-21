@@ -11,7 +11,7 @@ public class PopUpBox {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", okButton);
         alert.setHeaderText(Translator.getTranslation("warning"));
         alert.setTitle(Translator.getTranslation("warning"));
-        alert.setContentText(message);
+        alert.setContentText(Translator.getTranslation(message));
         alert.showAndWait();
     }
 

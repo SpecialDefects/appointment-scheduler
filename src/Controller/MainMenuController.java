@@ -140,7 +140,7 @@ public class MainMenuController implements Initializable, LoadableController {
         if (selectedCustomer != null) {
             ViewCreator.createViewWithCustomer("modifycustomer", "ModifyCustomer", 600, 400, actionEvent, this, selectedCustomer);
         } else {
-            PopUpBox.displayError("You must select a customer to modify");
+            PopUpBox.displayError("unselectedcustomermodify");
         }
     }
 
@@ -154,7 +154,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 customerTable.setItems(UserDao.getAllCustomers());
             }
         } else {
-            PopUpBox.displayError("You must select a customer to delete");
+            PopUpBox.displayError("unselectedcustomerdelete");
         }
     }
 
@@ -190,7 +190,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 allAppointments.setDisable(true);
             }
         } catch (Exception e) {
-            PopUpBox.displayError("Unable to show All appointments");
+            PopUpBox.displayError("errorallappointments");
         }
     }
 
@@ -228,7 +228,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 filterAppointmentsMonth();
             }
         } catch (Exception e) {
-            PopUpBox.displayError("Unable to filter appointments by Month");
+            PopUpBox.displayError("errormonthappointments");
         }
     }
 
@@ -245,7 +245,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 filterAppointmentsWeek();
             }
         } catch (Exception e) {
-            PopUpBox.displayError("Unable to filter appointments by Week");
+            PopUpBox.displayError("errorweekappointments");
         }
     }
 }
