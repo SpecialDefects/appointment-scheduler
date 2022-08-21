@@ -153,12 +153,15 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         } catch (Exception e) {
             throw new Exception("endtimeblank");
         }
+        if (endDateTime.isBefore(startDateTime)) {
+            throw new Exception("endtimebefore");
+        }
         Appointment newAppointment = new Appointment(title, description, location, type,
                                          startDateTime,
                                          endDateTime,
                                          customerId, userId, contact);
         UserDao.createAppointment(newAppointment);
-        ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
+        ViewCreator.createViewWithAppointment("mainmenu", "MainMenu", 900, 500, actionEvent, this, newAppointment);
     }
 
     public void handleCancel(ActionEvent actionEvent) throws IOException {

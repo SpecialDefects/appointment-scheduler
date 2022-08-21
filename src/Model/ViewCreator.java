@@ -41,4 +41,23 @@ public class ViewCreator {
             PopUpBox.displayError("Unable to load customer");
         }
     }
+
+    public static void createViewWithAppointment(String title, String viewName, int width, int height, ActionEvent actionEvent, Initializable currentController, Appointment appointment) {
+        try {
+            FXMLLoader loader = new FXMLLoader(currentController.getClass().getResource("/View/" + viewName + ".fxml"));
+            Parent root = loader.load();
+            LoadableController controller = loader.getController();
+            /** pass part and index to modify controller **/
+            controller.load(appointment);
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root, width, height);
+            stage.setTitle(Translator.getTranslation(title));
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            PopUpBox.displayError("Unable to load customer");
+        }
+    }
 }

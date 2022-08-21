@@ -22,19 +22,23 @@ import java.util.ResourceBundle;
 public class MainMenuController implements Initializable, LoadableController {
     public TableView customerTable;
     public TableView appointmentTable;
+
     public TableColumn customerName;
     public TableColumn customerAddress;
     public TableColumn customerPostalCode;
     public TableColumn customerPhone;
+
     public Button addCustomerButton;
     public Button modifyCustomerButton;
     public Button deleteCustomerButton;
+
     public Tab customersTabLabel;
     public Tab appointmentsTabLabel;
-    public Label userID;
+
     public Button createAppointmentButton;
     public Button modifyAppointmentButton;
     public Button deleteAppointmentButton;
+
     public TableColumn appointmentID;
     public TableColumn appointmentTitle;
     public TableColumn appointmentDescription;
@@ -45,10 +49,15 @@ public class MainMenuController implements Initializable, LoadableController {
     public TableColumn appointmentEnd;
     public TableColumn appointmentCustomer;
     public TableColumn appointmentUser;
+
     public RadioButton allAppointments;
     public RadioButton monthAppointments;
     public RadioButton weekAppointments;
+
+    public Label userID;
     public Label filterByLabel;
+
+    public TabPane mainTabPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -114,7 +123,7 @@ public class MainMenuController implements Initializable, LoadableController {
 
     @Override
     public void load(Appointment appointment) {
-
+        mainTabPane.getSelectionModel().select(appointmentsTabLabel);
     }
 
     @Override
