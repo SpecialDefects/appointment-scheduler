@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane prefHeight="430.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.CreateAppointmentController">
    <children>
       <ButtonBar layoutX="387.0" layoutY="352.0" prefHeight="40.0" prefWidth="200.0">
@@ -35,8 +36,8 @@
       <ChoiceBox fx:id="contactPicker" layoutX="312.0" layoutY="110.0" prefWidth="150.0" />
       <DatePicker fx:id="startDatePicker" layoutX="60.0" layoutY="310.0" />
       <Label fx:id="startDateLabel" layoutX="60.0" layoutY="290.0" text="Start Date" />
-      <ChoiceBox fx:id="startTimePicker" layoutX="60.0" layoutY="360.0" prefWidth="150.0" />
-      <ChoiceBox fx:id="endTimePicker" layoutX="245.0" layoutY="360.0" prefWidth="150.0" />
+      <ComboBox fx:id="startTimePicker" layoutX="60.0" layoutY="360.0" prefWidth="150.0" />
+      <ComboBox fx:id="endTimePicker" layoutX="245.0" layoutY="360.0" prefWidth="150.0" />
       <Label fx:id="startTimeLabel" layoutX="60.0" layoutY="340.0" text="Start Time" />
       <Label fx:id="endTimeLabel" layoutX="245.0" layoutY="340.0" text="End Time" />
    </children>

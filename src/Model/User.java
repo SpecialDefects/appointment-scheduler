@@ -29,7 +29,7 @@ public class User {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
-    public Integer getID() {
+    public Integer getId() {
         return this.Id;
     }
 

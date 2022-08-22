@@ -85,7 +85,7 @@ public class CreateCustomerController implements Initializable, LoadableControll
         String phone = phoneTextField.getText();
         int division_id = ((Division) divisionPicker.getSelectionModel().getSelectedItem()).getId();
 
-        UserDao.createCustomer(name, address, postalCode, phone, division_id, UserDao.getLoggedInUser().getID());
+        UserDao.createCustomer(name, address, postalCode, phone, division_id, UserDao.getLoggedInUser().getId());
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 

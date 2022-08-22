@@ -1,6 +1,8 @@
 package Controller;
 
 import Model.*;
+
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ResourceBundle;
 
@@ -48,7 +50,7 @@ public class LoginController implements Initializable, LoadableController {
             PopUpBox.displayError("invalid");
         }
     }
-
+    
     @Override
     public void load(Appointment appointment) {
 

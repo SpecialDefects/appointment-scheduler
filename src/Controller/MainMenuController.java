@@ -8,16 +8,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.WeekFields;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable, LoadableController {
@@ -105,7 +101,7 @@ public class MainMenuController implements Initializable, LoadableController {
         /** populate tab text based on locale **/
         customersTabLabel.setText(Translator.getTranslation("customers"));
         appointmentsTabLabel.setText(Translator.getTranslation("appointments"));
-        userID.setText(Integer.toString(UserDao.getLoggedInUser().getID()));
+        userID.setText(Integer.toString(UserDao.getLoggedInUser().getId()));
 
         filterByLabel.setText(Translator.getTranslation("filterby"));
         /** populate radio button text based on locale **/

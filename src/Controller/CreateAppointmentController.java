@@ -39,14 +39,13 @@ public class CreateAppointmentController implements Initializable, LoadableContr
     public Label descriptionLabel;
     public Label contactLabel;
     public Label startDateLabel;
-    public Label endDateLabel;
     public Label startTimeLabel;
     public Label endTimeLabel;
 
     public DatePicker startDatePicker;
 
-    public ChoiceBox startTimePicker;
-    public ChoiceBox endTimePicker;
+    public ComboBox startTimePicker;
+    public ComboBox endTimePicker;
     public ChoiceBox contactPicker;
 
 
@@ -73,7 +72,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
 
         ObservableList<Integer> hours = FXCollections.observableArrayList();
         ObservableList<String> minutes = FXCollections.observableArrayList();
-        hours.addAll(8, 9, 10, 11, 12, 13, 14, 15, 16);
+        hours.addAll(8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22);
         minutes.addAll("00", "30");
         ObservableList<String> times = FXCollections.observableArrayList();
 
@@ -90,7 +89,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                 } else {
                     times.add((offsetHours) + ":" + minute);
                 }
-                if (hour == 16) { break; }
+                if (hour == 22) { break; }
             }
         }
         startTimePicker.setItems(times);

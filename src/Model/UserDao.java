@@ -2,6 +2,7 @@ package Model;
 
 import javafx.collections.ObservableList;
 
+import javax.swing.*;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class UserDao {
                 String lastUpdatedBy = results.getString("Last_Updated_By");
                 userZone = ZoneId.of("America/New_York");
                 loggedInUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
+                checkForAppointment(loggedInUser);
             } else {
                 throw new Exception(Translator.getTranslation("invalid"));
             }
@@ -39,7 +41,23 @@ public class UserDao {
             throw new Exception(Translator.getTranslation("invalid"));
         }
     }
-
+    public static boolean checkForAppointment(User user) {
+        ObservableList<Appointment> userAppointments = UserDao.getAllUserAppointments(user);
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime futureTime = currentTime.plusMinutes(15);
+        for (Appointment appointment : userAppointments) {
+            LocalDateTime appointmentTime = LocalDateTime.parse(appointment.getStart());
+            if (appointmentTime.getDayOfYear() == currentTime.getDayOfYear() && appointmentTime.getHour() >= currentTime.getHour()) {
+                if (appointmentTime.isBefore(futureTime) || appointmentTime.isEqual(futureTime)) {
+                    PopUpBox.displayConfirmation("      UPCOMING APPOINTMENT\n " +
+                            "Appointment ID: " + appointment.getId() + " Date: " + appointmentTime.getYear() +
+                            "/" + appointmentTime.getMonthValue() + "/" + appointmentTime.getDayOfMonth() + " Time: " + appointmentTime.getHour() + ":" + appointmentTime.getMinute());
+                    return true;
+                }
+            };
+        }
+        return false;
+    }
     public static ZoneId getZone() {
         return userZone;
     }
@@ -199,7 +217,7 @@ public class UserDao {
                 "Postal_Code='" + postal + "', " +
                 "Division_ID=" + division + ", " +
                 "Last_Update='" + currentTime + "', " +
-                "Last_Updated_By=" + loggedInUser.getID() + " " +
+                "Last_Updated_By=" + loggedInUser.getId() + " " +
                 "WHERE Customer_ID=" + id + ";";
         System.out.println(statement);
         JDBC.makePreparedStatement(statement, conn);
@@ -236,7 +254,7 @@ public class UserDao {
                     "End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) " +
                     "VALUES ('" + appointment.getTitle() + "', '" + appointment.getDescription() + "', '" + appointment.getLocation() +
                     "', '" + appointment.getType() + "', '" + appointment.getStart() + "', '" + appointment.getEnd() + "', '" +
-                    currentTime + "', " + loggedInUser.getID() + ", '" + currentTime + "', " + loggedInUser.getID() + ", " + appointment.getCustomerId() +
+                    currentTime + "', " + loggedInUser.getId() + ", '" + currentTime + "', " + loggedInUser.getId() + ", " + appointment.getCustomerId() +
                     ", " + appointment.getUserId() + ", " + appointment.getContactId() + ");";
             System.out.println(statement);
             JDBC.makePreparedStatement(statement, conn);
@@ -259,5 +277,34 @@ public class UserDao {
 
     static public User getLoggedInUser() {
         return loggedInUser;
+    }
+
+    public static ObservableList<Appointment> getAllUserAppointments(User user) {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT * FROM appointments WHERE User_ID = " + user.getId();
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Appointment> appointments = observableArrayList();
+            while (results.next()) {
+                /** load each customer into customers list **/
+                int id = results.getInt("Appointment_ID");
+                String title = results.getString("Title");
+                String description = results.getString("Description");
+                String location = results.getString("Location");
+                String type = results.getString("Type");
+                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
+                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
+                int customerId = results.getInt("Customer_ID");
+                int userId = results.getInt("User_ID");
+                int contactId = results.getInt("Contact_ID");
+                appointments.add(new Appointment(id, title, description, location, type, start, end, customerId, userId, contactId));
+            }
+            /** return customer observable list **/
+            return appointments;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
     }
 }
