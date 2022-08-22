@@ -34,14 +34,17 @@ public class LoginController implements Initializable, LoadableController {
         userLocation.setText(zone.getId());
     }
 
-    public void handleLogin(ActionEvent actionEvent) {
+    public void handleLogin(ActionEvent actionEvent) throws Exception {
         try {
+            ZoneId zone = ZoneId.systemDefault();
             String username = usernameField.getText();
             String password = passwordField.getText();
-            UserDao.login(username, password);
+            UserDao.login(username, password, zone);
+            Log.loginSuccess(username);
             ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
         }
         catch (Exception e) {
+            Log.loginAttempt(usernameField.getText());
             PopUpBox.displayError("invalid");
         }
     }

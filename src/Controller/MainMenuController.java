@@ -14,6 +14,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
@@ -199,7 +200,7 @@ public class MainMenuController implements Initializable, LoadableController {
         int currentYear = LocalDate.now().getYear();
         ObservableList<Appointment> appointments = UserDao.getAllAppointments();
         appointmentTable.setItems(appointments.filtered(appointment -> {
-            LocalDateTime appointmentDate = LocalDateTime.parse(appointment.getStart());
+            LocalDate appointmentDate = LocalDateTime.parse(appointment.getStart()).toLocalDate();
             return (appointmentDate.getMonthValue() == currentMonth) && (appointmentDate.getYear() == currentYear);
         }));
     }

@@ -5,14 +5,17 @@ import javafx.collections.ObservableList;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static javafx.collections.FXCollections.*;
 
 public class UserDao {
 
     static User loggedInUser;
+    static ZoneId userZone;
 
-    public static void login(String userName, String password) throws Exception {
+    public static void login(String userName, String password, ZoneId zone) throws Exception {
 
         try {
             Connection conn = JDBC.getConnection();
@@ -27,7 +30,7 @@ public class UserDao {
                 String createdBy = results.getString("Created_By");
                 Timestamp lastUpdated = results.getTimestamp("Last_Update");
                 String lastUpdatedBy = results.getString("Last_Updated_By");
-
+                userZone = ZoneId.of("America/New_York");
                 loggedInUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
             } else {
                 throw new Exception(Translator.getTranslation("invalid"));
@@ -37,6 +40,9 @@ public class UserDao {
         }
     }
 
+    public static ZoneId getZone() {
+        return userZone;
+    }
     public static ObservableList<Customer> getAllCustomers() {
         try {
             Connection conn = JDBC.getConnection();
@@ -65,11 +71,13 @@ public class UserDao {
     public static void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
         try {
             Connection conn = JDBC.getConnection();
-            Date currentTime = new java.sql.Date(new java.util.Date().getTime());
+            ZonedDateTime utcTime = ZonedDateTime.now(ZoneId.of("UTC"));
+            Timestamp currentTime = Timestamp.from(Instant.from(utcTime));
             String statement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Create_Date," +
                     "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
                     "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
                     currentTime + "'," + user + "," + division + ");";
+            System.out.println(statement);
             JDBC.makePreparedStatement(statement, conn);
             JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
@@ -139,8 +147,8 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                LocalDateTime start = results.getTimestamp("Start").toLocalDateTime();
-                LocalDateTime end = results.getTimestamp("End").toLocalDateTime();
+                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
+                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");
@@ -168,8 +176,8 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                LocalDateTime start = results.getTimestamp("Start").toLocalDateTime();
-                LocalDateTime end = results.getTimestamp("End").toLocalDateTime();
+                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
+                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");

@@ -9,7 +9,10 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -70,14 +73,26 @@ public class CreateAppointmentController implements Initializable, LoadableContr
 
         contactPicker.setItems(UserDao.getAllContacts());
 
-        ObservableList<String> hours = FXCollections.observableArrayList();
+        ObservableList<Integer> hours = FXCollections.observableArrayList();
         ObservableList<String> minutes = FXCollections.observableArrayList();
-        hours.addAll("08", "09", "10", "11", "12", "13", "14", "15", "16");
-        minutes.addAll("00", "15", "30", "45");
+        hours.addAll(8, 9, 10, 11, 12, 13, 14, 15, 16);
+        minutes.addAll("00", "30");
         ObservableList<String> times = FXCollections.observableArrayList();
-        for (String hour : hours) {
+
+        // get offset
+        LocalDateTime curr = LocalDateTime.now();
+        ZonedDateTime buisnessTime = curr.atZone(ZoneId.of("America/New_York"));
+        ZonedDateTime userTime = curr.atZone(UserDao.getZone());
+        int diffHours = (int) Duration.between(buisnessTime, userTime).toHours();
+        for (int hour : hours) {
             for (String minute : minutes) {
-                times.add(hour + ":" + minute);
+                int offsetHours = (hour - diffHours);
+                if (offsetHours < 10) {
+                    times.add("0" + offsetHours + ":" + minute);
+                } else {
+                    times.add((offsetHours) + ":" + minute);
+                }
+                if (hour == 16) { break; }
             }
         }
         startTimePicker.setItems(times);
@@ -171,7 +186,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                 String startDate = startDatePicker.getValue().toString();
                 String startTime = startTimePicker.getValue().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter);
+                startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } catch (Exception e) {
                 throw new Exception("starttimeerror");
             }
@@ -182,7 +197,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                 String endDate = endDatePicker.getValue().toString();
                 String endTime = endTimePicker.getValue().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter);
+                endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } catch (Exception e) {
                 throw new Exception("endtimeerror");
             }
