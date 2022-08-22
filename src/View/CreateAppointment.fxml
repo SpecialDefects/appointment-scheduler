@@ -35,8 +35,6 @@
       <ChoiceBox fx:id="contactPicker" layoutX="312.0" layoutY="110.0" prefWidth="150.0" />
       <DatePicker fx:id="startDatePicker" layoutX="60.0" layoutY="310.0" />
       <Label fx:id="startDateLabel" layoutX="60.0" layoutY="290.0" text="Start Date" />
-      <DatePicker fx:id="endDatePicker" layoutX="245.0" layoutY="310.0" />
-      <Label fx:id="endDateLabel" layoutX="245.0" layoutY="290.0" text="End Date" />
       <ChoiceBox fx:id="startTimePicker" layoutX="60.0" layoutY="360.0" prefWidth="150.0" />
       <ChoiceBox fx:id="endTimePicker" layoutX="245.0" layoutY="360.0" prefWidth="150.0" />
       <Label fx:id="startTimeLabel" layoutX="60.0" layoutY="340.0" text="Start Time" />

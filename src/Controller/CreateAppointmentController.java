@@ -44,7 +44,6 @@ public class CreateAppointmentController implements Initializable, LoadableContr
     public Label endTimeLabel;
 
     public DatePicker startDatePicker;
-    public DatePicker endDatePicker;
 
     public ChoiceBox startTimePicker;
     public ChoiceBox endTimePicker;
@@ -63,7 +62,6 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         contactLabel.setText(Translator.getTranslation("contact"));
         startDateLabel.setText(Translator.getTranslation("startdate"));
         startTimeLabel.setText(Translator.getTranslation("starttime"));
-        endDateLabel.setText(Translator.getTranslation("enddate"));
         endTimeLabel.setText(Translator.getTranslation("endtime"));
 
         createButton.setText(Translator.getTranslation("create"));
@@ -190,17 +188,23 @@ public class CreateAppointmentController implements Initializable, LoadableContr
             } catch (Exception e) {
                 throw new Exception("starttimeerror");
             }
+            if (startDateTime.getDayOfWeek().toString() == "SATURDAY" || startDateTime.getDayOfWeek().toString() == "SUNDAY") {
+                throw new Exception("starttimeweekend");
+            };
 
             /** get end time for appoint **/
             /** throw exception if end time isn't valid **/
             try {
-                String endDate = endDatePicker.getValue().toString();
+                String endDate = startDatePicker.getValue().toString();
                 String endTime = endTimePicker.getValue().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } catch (Exception e) {
                 throw new Exception("endtimeerror");
             }
+            if (endDateTime.getDayOfWeek().toString() == "SATURDAY" || endDateTime.getDayOfWeek().toString() == "SUNDAY") {
+                throw new Exception("endtimeweekend");
+            };
 
             /** throw exception if endDate is before start date **/
             if (endDateTime.isBefore(startDateTime)) {
