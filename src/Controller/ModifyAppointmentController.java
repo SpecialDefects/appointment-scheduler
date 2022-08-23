@@ -309,6 +309,9 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
                     endDateTime,
                     customerId, userId, contact);
             /** insert new appointment into database **/
+            if (isCustomerAppointmentOverlap(newAppointment)) {
+                throw new Exception("appointmentoverlap");
+            }
             UserDao.updateAppointment(newAppointment);
             /** return to main menu **/
             ViewCreator.createViewWithAppointment("mainmenu", "MainMenu", 900, 500, actionEvent, this, newAppointment);
@@ -317,6 +320,30 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
         }
     }
 
+    public boolean isCustomerAppointmentOverlap(Appointment appointment) {
+        ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(appointment.getCustomerId());
+        LocalDateTime toBeScheduledStart = LocalDateTime.parse(appointment.getStart());
+        LocalDateTime toBeScheduledEnd = LocalDateTime.parse(appointment.getEnd());
+        LocalDateTime scheduledStart;
+        LocalDateTime scheduledEnd;
+        for (Appointment scheduledAppointment : customerAppointments) {
+            if (scheduledAppointment.getId() != appointment.getId()) {
+                scheduledStart = LocalDateTime.parse(scheduledAppointment.getStart());
+                scheduledEnd = LocalDateTime.parse(scheduledAppointment.getEnd());
+                if ((toBeScheduledStart.isBefore(scheduledStart) && toBeScheduledEnd.isAfter(scheduledStart))
+                        || (toBeScheduledStart.isEqual(scheduledStart) && toBeScheduledEnd.isEqual(scheduledEnd))
+                        || (toBeScheduledStart.isEqual(scheduledStart) && toBeScheduledEnd.isBefore(scheduledEnd))
+                        || (toBeScheduledStart.isEqual(scheduledStart) && toBeScheduledEnd.isAfter(scheduledEnd))
+                        || (toBeScheduledStart.isAfter(scheduledStart) && toBeScheduledEnd.isBefore(scheduledEnd))
+                        || (toBeScheduledStart.isEqual(scheduledEnd) && toBeScheduledEnd.isEqual(scheduledEnd))
+                        || (toBeScheduledStart.isBefore(scheduledEnd) && toBeScheduledEnd.isAfter(scheduledEnd))
+                        || (toBeScheduledStart.isBefore(scheduledStart) && toBeScheduledEnd.isAfter(scheduledEnd))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * handle cancel button action, return to main menu
      * @param actionEvent

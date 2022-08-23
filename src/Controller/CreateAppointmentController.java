@@ -258,11 +258,16 @@ public class CreateAppointmentController implements Initializable, LoadableContr
             if (endDateTime.isBefore(startDateTime)) {
                 throw new Exception("endtimebefore");
             }
+
+
             /** create new appointment from user input **/
             Appointment newAppointment = new Appointment(title, description, location, type,
                     startDateTime,
                     endDateTime,
                     customerId, userId, contact);
+            if (isCustomerAppointmentOverlap(newAppointment)) {
+                throw new Exception("appointmentoverlap");
+            }
             /** insert new appointment into database **/
             UserDao.createAppointment(newAppointment);
             /** return to main menu **/
@@ -270,6 +275,27 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         } catch (Exception e) {
             PopUpBox.displayError(e.getMessage());
         }
+    }
+
+    public boolean isCustomerAppointmentOverlap(Appointment appointment) {
+        ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(appointment.getCustomerId());
+        LocalDateTime toBeScheduledStart = LocalDateTime.parse(appointment.getStart());
+        LocalDateTime toBeScheduledEnd = LocalDateTime.parse(appointment.getEnd());
+        LocalDateTime scheduledStart;
+        LocalDateTime scheduledEnd;
+        for (Appointment scheduledAppointment : customerAppointments) {
+            scheduledStart = LocalDateTime.parse(scheduledAppointment.getStart());
+            scheduledEnd = LocalDateTime.parse(scheduledAppointment.getEnd());
+            if ((toBeScheduledStart.isBefore(scheduledStart) &&  toBeScheduledEnd.isAfter(scheduledStart))
+            || (toBeScheduledStart.isEqual(scheduledStart) && toBeScheduledEnd.isEqual(scheduledEnd))
+            || (toBeScheduledStart.isEqual(scheduledStart) && toBeScheduledEnd.isBefore(scheduledEnd))
+            || (toBeScheduledStart.isAfter(scheduledStart) && toBeScheduledEnd.isBefore(scheduledEnd))
+            || (toBeScheduledStart.isEqual(scheduledEnd) && toBeScheduledEnd.isEqual(scheduledEnd))
+            || (toBeScheduledStart.isBefore(scheduledEnd) && toBeScheduledEnd.isAfter(scheduledEnd))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

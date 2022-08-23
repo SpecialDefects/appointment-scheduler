@@ -188,7 +188,7 @@ public class UserDao {
         try {
             Connection conn = JDBC.getConnection();
             /** check if customer has scheduled appointments **/
-            ObservableList<Appointment> appointments = getAllCustomerAppointments(customer);
+            ObservableList<Appointment> appointments = getAllCustomerAppointments(customer.getId());
             /** delete appointments for customer **/
             if (!appointments.isEmpty()) {
                 String statement = "DELETE FROM appointments WHERE Customer_ID = " + customer.getId();
@@ -208,13 +208,13 @@ public class UserDao {
 
     /**
      * retrieves all of a given customers appointments
-     * @param customer customer whose appointments to retrieve
+     * @param cid customer id whose appointments to retrieve
      * @return
      */
-    public static ObservableList<Appointment> getAllCustomerAppointments(Customer customer) {
+    public static ObservableList<Appointment> getAllCustomerAppointments(int cid) {
         try {
             Connection conn = JDBC.getConnection();
-            String statement = "SELECT * FROM appointments WHERE Customer_ID = " + customer.getId();
+            String statement = "SELECT * FROM appointments WHERE Customer_ID = " + cid;
             JDBC.makePreparedStatement(statement, conn);
             ResultSet results = JDBC.getPreparedStatement().executeQuery();
             ObservableList<Appointment> appointments = observableArrayList();

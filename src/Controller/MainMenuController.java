@@ -207,7 +207,7 @@ public class MainMenuController implements Initializable, LoadableController {
      */
     public void handleDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
-        ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(selectedCustomer);
+        ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(selectedCustomer.getId());
         if (selectedCustomer != null) {
             if (PopUpBox.displayConfirmation("Are you sure you would like to delete " + selectedCustomer.getName() + " from Customers\n\nCustomer has " + customerAppointments.size() + " scheduled appointments")) {
                 UserDao.deleteCustomer(selectedCustomer);
