@@ -17,14 +17,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 /**
- * controls the create appointment view
+ * controls the modify appointment view
  */
-public class CreateAppointmentController implements Initializable, LoadableController {
+public class ModifyAppointmentController implements Initializable, LoadableController {
 
     /** cancel button **/
     public Button cancelButton;
-    /** create button **/
-    public Button createButton;
+    /** save button **/
+    public Button saveButton;
 
     /** title textfield **/
     public TextField titleTextField;
@@ -98,7 +98,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         endTimeLabel.setText(Translator.getTranslation("endtime"));
 
         /** translate button text based on user locale **/
-        createButton.setText(Translator.getTranslation("create"));
+        saveButton.setText(Translator.getTranslation("save"));
         cancelButton.setText(Translator.getTranslation("cancel"));
 
         /** set id prompt to text based on user locale **/
@@ -140,7 +140,49 @@ public class CreateAppointmentController implements Initializable, LoadableContr
      * @param appointment
      */
     @Override
-    public void load(Appointment appointment) { }
+    public void load(Appointment appointment) {
+        /** retrieve appointment information from Appointment **/
+        int id = appointment.getId();
+        String title = appointment.getTitle();
+        String description = appointment.getDescription();
+        String location = appointment.getLocation();
+        String type = appointment.getType();
+        LocalDateTime start = LocalDateTime.parse(appointment.getStart());
+        LocalDateTime end = LocalDateTime.parse(appointment.getEnd());
+        int customerId = appointment.getCustomerId();
+        int userId = appointment.getUserId();
+        int contactId = appointment.getContactId();
+
+        /** populate fields in view **/
+
+        idTextField.setText(Integer.toString(id));
+        titleTextField.setText(title);
+        descriptionTextArea.setText(description);
+        locationTextField.setText(location);
+        typeTextField.setText(type);
+        customerTextField.setText(Integer.toString(customerId));
+        userTextField.setText(Integer.toString(userId));
+        /** find corresponding contact by contact id from items in contact combobox **/
+        Contact chosenContact = (Contact) contactPicker.getItems().filtered((contact) -> ((Contact) contact).getId() == contactId).get(0);
+        contactPicker.setValue(chosenContact);
+
+        /** format hour and minute properly **/
+        String startHour = Integer.toString(start.getHour());
+        if (start.getHour() < 10) { startHour = "0" + startHour; }
+        String startMinute = Integer.toString(start.getMinute());
+        if (startMinute != "30") { startMinute = "00"; }
+
+        String endHour = Integer.toString(end.getHour());
+        if (end.getHour() < 10) { endHour = "0" + endHour; }
+        String endMinute = Integer.toString(end.getMinute());
+        if (endMinute != "30") { endMinute = "00"; }
+
+        startDatePicker.setValue(start.toLocalDate());
+        startTimePicker.setValue(startHour + ":" + startMinute);
+        endTimePicker.setValue(endHour + ":" + endMinute);
+
+
+    }
 
     /**
      *
@@ -154,7 +196,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
      * @param actionEvent
      * @throws Exception
      */
-    public void handleCreate(ActionEvent actionEvent) throws Exception {
+    public void handleSave(ActionEvent actionEvent) throws Exception {
         String title;
         String type;
         String description;
@@ -231,7 +273,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                 String startDate = startDatePicker.getValue().toString();
                 String startTime = startTimePicker.getValue().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter);
+                startDateTime = LocalDateTime.parse(startDate + " " + startTime, formatter).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } catch (Exception e) {
                 throw new Exception("starttimeerror");
             }
@@ -245,7 +287,7 @@ public class CreateAppointmentController implements Initializable, LoadableContr
                 String endDate = startDatePicker.getValue().toString();
                 String endTime = endTimePicker.getValue().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter);
+                endDateTime = LocalDateTime.parse(endDate + " " + endTime, formatter).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } catch (Exception e) {
                 throw new Exception("endtimeerror");
             }
@@ -280,3 +322,4 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 }
+

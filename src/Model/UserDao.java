@@ -3,10 +3,8 @@ package Model;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 import static javafx.collections.FXCollections.*;
 
@@ -45,7 +43,7 @@ public class UserDao {
                 Timestamp lastUpdated = results.getTimestamp("Last_Update");
                 String lastUpdatedBy = results.getString("Last_Updated_By");
                 /** set userZone **/
-                userZone = ZoneId.of("America/New_York");
+                userZone = zone;
                 /** set user logged in **/
                 loggedInUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
                 /** check if user has any upcoming appointments **/
@@ -71,9 +69,9 @@ public class UserDao {
             LocalDateTime appointmentTime = LocalDateTime.parse(appointment.getStart());
             if (appointmentTime.getDayOfYear() == currentTime.getDayOfYear() && appointmentTime.getHour() >= currentTime.getHour()) {
                 if (appointmentTime.isBefore(futureTime) || appointmentTime.isEqual(futureTime)) {
-                    PopUpBox.displayConfirmation("      UPCOMING APPOINTMENT\n " +
-                            "Appointment ID: " + appointment.getId() + " Date: " + appointmentTime.getYear() +
-                            "/" + appointmentTime.getMonthValue() + "/" + appointmentTime.getDayOfMonth() + " Time: " + appointmentTime.getHour() + ":" + appointmentTime.getMinute());
+                    PopUpBox.displayConfirmation("                         UPCOMING APPOINTMENT\n " +
+                            "Appointment ID: " + appointment.getId() + "     Date: " + appointmentTime.getYear() +
+                            "/" + appointmentTime.getMonthValue() + "/" + appointmentTime.getDayOfMonth() + "     Time: " + appointmentTime.getHour() + ":" + (appointmentTime.getMinute() == 30 ? "30" : "00"));
                     return true;
                 }
             };
@@ -255,8 +253,13 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
-                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
+                System.out.println(results.getString("Start"));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime start = ZonedDateTime.of(LocalDateTime.parse(results.getString("Start"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                System.out.println(start);
+                System.out.println(results.getString("End"));
+                LocalDateTime end = ZonedDateTime.of(LocalDateTime.parse(results.getString("End"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                System.out.println(end);
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");
@@ -327,11 +330,13 @@ public class UserDao {
     public static void createAppointment(Appointment appointment) {
         try {
             Connection conn = JDBC.getConnection();
-            Timestamp currentTime = Timestamp.from(Instant.now());
+            Timestamp currentTime = Timestamp.from(Instant.now().atZone(ZoneId.of("UTC")).toInstant());
+            LocalDateTime startDateUtc = ZonedDateTime.of(LocalDateTime.parse(appointment.getStart()), userZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+            LocalDateTime endDateUtc = ZonedDateTime.of(LocalDateTime.parse(appointment.getEnd()), userZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
             String statement = "INSERT INTO appointments (Title, Description, Location, Type, Start," +
                     "End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) " +
                     "VALUES ('" + appointment.getTitle() + "', '" + appointment.getDescription() + "', '" + appointment.getLocation() +
-                    "', '" + appointment.getType() + "', '" + appointment.getStart() + "', '" + appointment.getEnd() + "', '" +
+                    "', '" + appointment.getType() + "', '" + startDateUtc + "', '" + endDateUtc + "', '" +
                     currentTime + "', " + loggedInUser.getId() + ", '" + currentTime + "', " + loggedInUser.getId() + ", " + appointment.getCustomerId() +
                     ", " + appointment.getUserId() + ", " + appointment.getContactId() + ");";
             System.out.println(statement);

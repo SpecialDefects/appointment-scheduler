@@ -240,7 +240,8 @@ public class MainMenuController implements Initializable, LoadableController {
      * @param actionEvent
      */
     public void handleModifyAppointment(ActionEvent actionEvent) {
-        //ViewCreator.createViewWithAppointment("createappointment", "CreateAppointment", 630, 430, actionEvent, this, selectedAppointment);
+        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        ViewCreator.createViewWithAppointment("modifyappointment", "ModifyAppointment", 630, 430, actionEvent, this, selectedAppointment);
     }
 
     /**
@@ -270,7 +271,10 @@ public class MainMenuController implements Initializable, LoadableController {
                 monthAppointments.setSelected(false);
                 weekAppointments.setSelected(false);
                 appointmentTable.setItems(UserDao.getAllAppointments());
+
                 allAppointments.setDisable(true);
+                weekAppointments.setDisable(false);
+                monthAppointments.setDisable(false);
             }
         } catch (Exception e) {
             PopUpBox.displayError("errorallappointments");
