@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ResourceBundle;
 
+import static javafx.collections.FXCollections.observableArrayList;
+
 /**
  * controls MainMenuView
  */
@@ -40,6 +42,8 @@ public class MainMenuController implements Initializable, LoadableController {
     public Button modifyCustomerButton;
     /** delete customer button **/
     public Button deleteCustomerButton;
+    /** generate report button **/
+    public Button reportsButton;
 
     /** customer table tab **/
     public Tab customersTabLabel;
@@ -88,6 +92,34 @@ public class MainMenuController implements Initializable, LoadableController {
 
     /** main tab pane **/
     public TabPane mainTabPane;
+
+    /** schedule tab **/
+    public Tab scheduleTab;
+
+    /** contact combo box **/
+    public ComboBox contactsComboBox;
+
+
+    /** schedule table **/
+    public TableView scheduleTable;
+
+    /** schedule id column **/
+    public TableColumn scheduleID;
+    /** schedule title column **/
+    public TableColumn scheduleTitle;
+    /** schedule description column **/
+    public TableColumn scheduleDescription;
+    /** schedule location column **/
+    public TableColumn scheduleLocation;
+    /** schedule type column **/
+    public TableColumn scheduleType;
+    /** schedule start column **/
+    public TableColumn scheduleStart;
+    /** schedule end column **/
+    public TableColumn scheduleEnd;
+    /** schedule customer column **/
+    public TableColumn scheduleCustomer;
+
 
     /**
      * initialize MainMenu view
@@ -157,6 +189,30 @@ public class MainMenuController implements Initializable, LoadableController {
         modifyAppointmentButton.setText(Translator.getTranslation("modify"));
         deleteAppointmentButton.setText(Translator.getTranslation("delete"));
 
+        /** populate schedule table **/
+        scheduleTable.setItems(observableArrayList());
+        scheduleID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        scheduleTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        scheduleDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        scheduleLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        scheduleType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        scheduleStart.setCellValueFactory(new PropertyValueFactory<>("start"));
+        scheduleEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
+        scheduleCustomer.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+
+        /** populate contact picker **/
+        contactsComboBox.setItems(UserDao.getAllContacts());
+
+        /** populate schedule table text based on user locale **/
+        scheduleID.setText(Translator.getTranslation("id"));
+        scheduleTitle.setText(Translator.getTranslation("title"));
+        scheduleDescription.setText(Translator.getTranslation("description"));
+        scheduleLocation.setText(Translator.getTranslation("location"));
+        scheduleType.setText(Translator.getTranslation("type"));
+        scheduleStart.setText(Translator.getTranslation("start"));
+        scheduleEnd.setText(Translator.getTranslation("end"));
+        scheduleCustomer.setText(Translator.getTranslation("customer"));
+        scheduleTab.setText(Translator.getTranslation("schedule"));
     }
 
     /**
@@ -291,6 +347,7 @@ public class MainMenuController implements Initializable, LoadableController {
 
     /**
      * filter appointments by current month
+     * lambda is used to filter appointments by month, avoids another database call
      */
     public void filterAppointmentsMonth() {
         int currentMonth = LocalDate.now().getMonthValue();
@@ -304,6 +361,7 @@ public class MainMenuController implements Initializable, LoadableController {
 
     /**
      * filter appointments by current week
+     * lambda is used to filter appointments by week, avoids another database call
      */
     public void filterAppointmentsWeek() {
         LocalDate currentDate = LocalDate.now();
@@ -355,6 +413,16 @@ public class MainMenuController implements Initializable, LoadableController {
             }
         } catch (Exception e) {
             PopUpBox.displayError("errorweekappointments");
+        }
+    }
+
+
+    public void handleContactsCombo(ActionEvent actionEvent) {
+        Contact selectedContact = (Contact) contactsComboBox.getSelectionModel().getSelectedItem();
+        if (selectedContact != null) {
+            scheduleTable.setItems(UserDao.getAllContactAppointments(selectedContact));
+        } else {
+            PopUpBox.displayError("unselectedcontact");
         }
     }
 }

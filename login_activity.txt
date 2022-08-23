@@ -1,1 +1,20 @@
-[2022-08-21T19:39:31.297045100] Unsuccessful Log in attempt using Username: text
+[2022-08-23T04:21:56.306867] Successful login of Username: test
+[2022-08-23T04:21:56.390871900] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:23:46.593645900] Unsuccessful Log in attempt using Username: testt
+[2022-08-23T04:23:51.239355700] Successful login of Username: test
+[2022-08-23T04:23:51.326350800] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:25:47.780061100] Successful login of Username: test
+[2022-08-23T04:25:47.866058100] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:25:52.222320800] Successful login of Username: test
+[2022-08-23T04:25:52.251320] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:26:44.866677800] Successful login of Username: test
+[2022-08-23T04:26:44.956300900] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:27:14.565407700] Successful login of Username: test
+[2022-08-23T04:27:14.662825400] Unsuccessful Log in attempt using Username: test
+[2022-08-23T04:28:57.513047500] Successful login of Username: test
+[2022-08-23T04:33:56.311951400] Successful login of Username: test
+[2022-08-23T04:35:16.220508500] Successful login of Username: test
+[2022-08-23T04:36:18.012126900] Successful login of Username: test
+[2022-08-23T04:38:53.588241300] Successful login of Username: test
+[2022-08-23T04:39:39.159719100] Successful login of Username: test
+[2022-08-23T04:40:07.544889400] Successful login of Username: test

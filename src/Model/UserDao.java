@@ -432,4 +432,38 @@ public class UserDao {
         JDBC.makePreparedStatement(statement, conn);
         JDBC.getPreparedStatement().executeUpdate();
     }
+
+    /**
+     * returns all appointments for a given contact
+     * @return observable list of appointments for contact
+     */
+    public static ObservableList<Appointment> getAllContactAppointments(Contact contact) {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT * FROM appointments WHERE Contact_ID = " + contact.getId();
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Appointment> appointments = observableArrayList();
+            while (results.next()) {
+                /** load each customer into customers list **/
+                int id = results.getInt("Appointment_ID");
+                String title = results.getString("Title");
+                String description = results.getString("Description");
+                String location = results.getString("Location");
+                String type = results.getString("Type");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime start = ZonedDateTime.of(LocalDateTime.parse(results.getString("Start"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                LocalDateTime end = ZonedDateTime.of(LocalDateTime.parse(results.getString("End"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                int customerId = results.getInt("Customer_ID");
+                int userId = results.getInt("User_ID");
+                int contactId = results.getInt("Contact_ID");
+                appointments.add(new Appointment(id, title, description, location, type, start, end, customerId, userId, contactId));
+            }
+            /** return customer observable list **/
+            return appointments;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
+    }
 }

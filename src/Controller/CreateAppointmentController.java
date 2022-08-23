@@ -277,6 +277,11 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         }
     }
 
+    /**
+     * checks to see if appointment has scheduling conflicts
+     * @param appointment appointment to check for scheduling conflict
+     * @return true if appointment has scheduling conflict, else false
+     */
     public boolean isCustomerAppointmentOverlap(Appointment appointment) {
         ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(appointment.getCustomerId());
         LocalDateTime toBeScheduledStart = LocalDateTime.parse(appointment.getStart());

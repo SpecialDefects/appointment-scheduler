@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.time.LocalDateTime;
@@ -22,11 +23,11 @@ public class Log {
         }
         /** write login attempt to file **/
         try {
-            FileWriter writer = new FileWriter("./login_activity.txt");
+            FileWriter writer = new FileWriter("./login_activity.txt", true);
+            BufferedWriter buffwriter = new BufferedWriter(writer);
             LocalDateTime now = LocalDateTime.now();
-            writer.write("[" + now + "] Unsuccessful Log in attempt using Username: " + username + "\n");
-            writer.close();
-            System.out.println("Attempt logged");
+            buffwriter.write("[" + now + "] Unsuccessful Log in attempt using Username: " + username + "\n");
+            buffwriter.close();
         } catch (Exception e) {
             throw new Exception("Unable to write to log file");
         }
@@ -40,17 +41,19 @@ public class Log {
     public static void loginSuccess(String username) throws Exception {
         /** create file **/
         try {
-            File logFile = new File("../login_activity.txt");
+            File logFile = new File("./login_activity.txt");
             logFile.createNewFile();
         } catch(Exception e) {
             throw new Exception("Cannot create log file");
         }
         /** write successful user login to file **/
         try {
-            FileWriter writer = new FileWriter("../login_activity.txt");
+            FileWriter writer = new FileWriter("./login_activity.txt", true);
+            BufferedWriter buffwriter = new BufferedWriter(writer);
             LocalDateTime now = LocalDateTime.now();
-            writer.write("[" + now + "] Successful login of Username: " + username + "\n");
-            writer.close();
+            buffwriter.write("[" + now + "] Successful login of Username: " + username + "\n");
+            System.out.println("Successful Login recorded");
+            buffwriter.close();
         } catch (Exception e) {
             throw new Exception("Unable to write to log file");
         }

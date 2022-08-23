@@ -136,7 +136,8 @@ public class CreateCustomerController implements Initializable, LoadableControll
 
 
     /**
-     * filter division picker based on country picker selection
+     * filter division picker based on country picker selection,
+     * lambda is used to filter the divisions list without requiring another database call or bulky helper method
      * @param actionEvent
      * @throws Exception
      */
