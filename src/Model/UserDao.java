@@ -56,6 +56,7 @@ public class UserDao {
                 }
             };
         }
+        PopUpBox.displayConfirmation("No Upcoming Appointments");
         return false;
     }
     public static ZoneId getZone() {
