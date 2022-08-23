@@ -127,8 +127,7 @@ public class UserDao {
     public static void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
         try {
             Connection conn = JDBC.getConnection();
-            ZonedDateTime utcTime = ZonedDateTime.now(ZoneId.of("UTC"));
-            Timestamp currentTime = Timestamp.from(Instant.from(utcTime));
+            Timestamp currentTime = Timestamp.from(ZonedDateTime.now(ZoneId.of("UTC")).toInstant());
             String statement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Create_Date," +
                     "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
                     "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
@@ -185,21 +184,26 @@ public class UserDao {
      * @param customer customer to remove from database
      * @throws SQLException
      */
-    public static void deleteCustomer(Customer customer) throws SQLException {
-        Connection conn = JDBC.getConnection();
-        /** check if customer has scheduled appointments **/
-        ObservableList<Appointment> appointments = getAllCustomerAppointments(customer);
-        /** delete appointments for customer **/
-        if (!appointments.isEmpty()) {
-            String statement = "DELETE FROM appointments WHERE Customer_ID = " + customer.getId();
+    public static boolean deleteCustomer(Customer customer) throws SQLException {
+        try {
+            Connection conn = JDBC.getConnection();
+            /** check if customer has scheduled appointments **/
+            ObservableList<Appointment> appointments = getAllCustomerAppointments(customer);
+            /** delete appointments for customer **/
+            if (!appointments.isEmpty()) {
+                String statement = "DELETE FROM appointments WHERE Customer_ID = " + customer.getId();
+                JDBC.makePreparedStatement(statement, conn);
+                JDBC.getPreparedStatement().executeUpdate();
+            }
+
+            /** delete customer **/
+            String statement = "DELETE FROM customers WHERE Customer_ID = " + customer.getId();
             JDBC.makePreparedStatement(statement, conn);
             JDBC.getPreparedStatement().executeUpdate();
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-
-        /** delete customer **/
-        String statement = "DELETE FROM customers WHERE Customer_ID = " + customer.getId();
-        JDBC.makePreparedStatement(statement, conn);
-        JDBC.getPreparedStatement().executeUpdate();
     }
 
     /**
@@ -221,8 +225,9 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
-                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime start = ZonedDateTime.of(LocalDateTime.parse(results.getString("Start"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                LocalDateTime end = ZonedDateTime.of(LocalDateTime.parse(results.getString("End"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");
@@ -253,13 +258,9 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                System.out.println(results.getString("Start"));
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime start = ZonedDateTime.of(LocalDateTime.parse(results.getString("Start"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
-                System.out.println(start);
-                System.out.println(results.getString("End"));
                 LocalDateTime end = ZonedDateTime.of(LocalDateTime.parse(results.getString("End"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
-                System.out.println(end);
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");
@@ -283,7 +284,7 @@ public class UserDao {
      */
     static public void updateCustomer(int id, String name, String address, String postal, int division) throws SQLException {
         Connection conn = JDBC.getConnection();
-        Timestamp currentTime = Timestamp.from(Instant.now());
+        Timestamp currentTime = Timestamp.from(ZonedDateTime.now(ZoneId.of("UTC")).toInstant());
         String statement = "UPDATE customers " +
                 "SET Customer_Name='" + name + "', " +
                 "Address='" + address + "', " +
@@ -388,8 +389,9 @@ public class UserDao {
                 String description = results.getString("Description");
                 String location = results.getString("Location");
                 String type = results.getString("Type");
-                LocalDateTime start = results.getTimestamp("Start").toInstant().atZone(userZone).toLocalDateTime();
-                LocalDateTime end = results.getTimestamp("End").toInstant().atZone(userZone).toLocalDateTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime start = ZonedDateTime.of(LocalDateTime.parse(results.getString("Start"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
+                LocalDateTime end = ZonedDateTime.of(LocalDateTime.parse(results.getString("End"), formatter), ZoneId.of("UTC")).withZoneSameInstant(userZone).toLocalDateTime();
                 int customerId = results.getInt("Customer_ID");
                 int userId = results.getInt("User_ID");
                 int contactId = results.getInt("Contact_ID");
@@ -401,5 +403,33 @@ public class UserDao {
             throwables.printStackTrace();
         }
         return observableArrayList();
+    }
+
+    /**
+     * updates an appointment within the database
+     * @param appointment appointment to update
+     * @throws SQLException
+     */
+    public static void updateAppointment(Appointment appointment) throws SQLException {
+        Connection conn = JDBC.getConnection();
+        Timestamp currentTime = Timestamp.from(ZonedDateTime.now(ZoneId.of("UTC")).toInstant());
+        LocalDateTime startDateUtc = ZonedDateTime.of(LocalDateTime.parse(appointment.getStart()), userZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+        LocalDateTime endDateUtc = ZonedDateTime.of(LocalDateTime.parse(appointment.getEnd()), userZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+        String statement = "UPDATE appointments " +
+                "SET Title='" + appointment.getTitle() + "', " +
+                "Description='" + appointment.getDescription() + "', " +
+                "Location='" + appointment.getLocation() + "', " +
+                "Type='" + appointment.getType() + "', " +
+                "Start='" + startDateUtc + "', " +
+                "End='" + endDateUtc + "', " +
+                "Last_Update='" + currentTime + "', " +
+                "Last_Updated_By=" + loggedInUser.getId() + ", " +
+                "Customer_ID=" + appointment.getCustomerId() + ", " +
+                "User_ID=" + appointment.getUserId() + ", " +
+                "Contact_ID=" + appointment.getContactId() + " " +
+                "WHERE Appointment_ID=" + appointment.getId() + ";";
+        System.out.println(statement);
+        JDBC.makePreparedStatement(statement, conn);
+        JDBC.getPreparedStatement().executeUpdate();
     }
 }

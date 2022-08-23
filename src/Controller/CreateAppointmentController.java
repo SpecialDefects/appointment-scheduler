@@ -119,15 +119,16 @@ public class CreateAppointmentController implements Initializable, LoadableContr
         ZonedDateTime buisnessTime = curr.atZone(ZoneId.of("America/New_York"));
         ZonedDateTime userTime = curr.atZone(UserDao.getZone());
         int diffHours = (int) Duration.between(buisnessTime, userTime).toHours();
+        int startTime = 8 - diffHours;
         for (int hour : hours) {
             for (String minute : minutes) {
-                int offsetHours = (hour - diffHours);
+                int offsetHours = (hour - diffHours) % 24;
                 if (offsetHours < 10) {
                     times.add("0" + offsetHours + ":" + minute);
                 } else {
                     times.add((offsetHours) + ":" + minute);
                 }
-                if (hour == 22) { break; }
+                if ((offsetHours == (startTime + 14) % 24) ) { break; }
             }
         }
         /** populate time choices **/

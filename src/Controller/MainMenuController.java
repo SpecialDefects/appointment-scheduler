@@ -241,7 +241,11 @@ public class MainMenuController implements Initializable, LoadableController {
      */
     public void handleModifyAppointment(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
-        ViewCreator.createViewWithAppointment("modifyappointment", "ModifyAppointment", 630, 430, actionEvent, this, selectedAppointment);
+        if (selectedAppointment != null) {
+            ViewCreator.createViewWithAppointment("modifyappointment", "ModifyAppointment", 630, 430, actionEvent, this, selectedAppointment);
+        } else {
+            PopUpBox.displayError("unselectedappointmentmodify");
+        }
     }
 
     /**
@@ -250,13 +254,17 @@ public class MainMenuController implements Initializable, LoadableController {
      */
     public void handleDeleteAppointment(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
-        UserDao.deleteAppointment(selectedAppointment);
-        if (allAppointments.isSelected()) {
-            appointmentTable.setItems(UserDao.getAllAppointments());
-        } else if (monthAppointments.isSelected()) {
-            filterAppointmentsMonth();
-        } else if (weekAppointments.isSelected()) {
-            filterAppointmentsWeek();
+        if (selectedAppointment != null) {
+            UserDao.deleteAppointment(selectedAppointment);
+            if (allAppointments.isSelected()) {
+                appointmentTable.setItems(UserDao.getAllAppointments());
+            } else if (monthAppointments.isSelected()) {
+                filterAppointmentsMonth();
+            } else if (weekAppointments.isSelected()) {
+                filterAppointmentsWeek();
+            }
+        } else {
+            PopUpBox.displayError("unselectedappointmentdelete");
         }
     }
 

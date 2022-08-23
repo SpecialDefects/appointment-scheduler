@@ -119,15 +119,16 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
         ZonedDateTime buisnessTime = curr.atZone(ZoneId.of("America/New_York"));
         ZonedDateTime userTime = curr.atZone(UserDao.getZone());
         int diffHours = (int) Duration.between(buisnessTime, userTime).toHours();
+        int startTime = 8 - diffHours;
         for (int hour : hours) {
             for (String minute : minutes) {
-                int offsetHours = (hour - diffHours);
+                int offsetHours = (hour - diffHours) % 24;
                 if (offsetHours < 10) {
                     times.add("0" + offsetHours + ":" + minute);
                 } else {
                     times.add((offsetHours) + ":" + minute);
                 }
-                if (hour == 22) { break; }
+                if ((offsetHours == (startTime + 14) % 24) ) { break; }
             }
         }
         /** populate time choices **/
@@ -197,6 +198,7 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
      * @throws Exception
      */
     public void handleSave(ActionEvent actionEvent) throws Exception {
+        int id;
         String title;
         String type;
         String description;
@@ -207,6 +209,8 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
         LocalDateTime startDateTime;
         LocalDateTime endDateTime;
         try {
+            /** get appointment id **/
+            id = Integer.parseInt(idTextField.getText());
             /** get appointment title **/
             try {
                 title = titleTextField.getText();
@@ -300,12 +304,12 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
                 throw new Exception("endtimebefore");
             }
             /** create new appointment from user input **/
-            Appointment newAppointment = new Appointment(title, description, location, type,
+            Appointment newAppointment = new Appointment(id, title, description, location, type,
                     startDateTime,
                     endDateTime,
                     customerId, userId, contact);
             /** insert new appointment into database **/
-            UserDao.createAppointment(newAppointment);
+            UserDao.updateAppointment(newAppointment);
             /** return to main menu **/
             ViewCreator.createViewWithAppointment("mainmenu", "MainMenu", 900, 500, actionEvent, this, newAppointment);
         } catch (Exception e) {
