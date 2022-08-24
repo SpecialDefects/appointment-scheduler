@@ -152,6 +152,12 @@ public class MainMenuController implements Initializable, LoadableController {
     /** total label **/
     public Label totalLabel;
 
+    /** result of month and type query **/
+    public Label monthsTypeResult;
+
+    /** month and type button **/
+    public Button monthTypeButton;
+
 
     /**
      * initialize MainMenu view
@@ -253,7 +259,7 @@ public class MainMenuController implements Initializable, LoadableController {
         reportsTab.setText(Translator.getTranslation("reports"));
         /** populate months picker **/
         ObservableList<String> months = observableArrayList("January", "February", "March", "April", "May", "June", "July", "August",
-        "September", "October", "November", "Decembter");;
+        "September", "October", "November", "December");;
         reportsMonthChoice.setItems(months);
         /** populate appointment type picker **/
         reportsTypeChoice.setItems(UserDao.getAppointmentTypes());
@@ -266,6 +272,8 @@ public class MainMenuController implements Initializable, LoadableController {
 
         /** set total appointments **/
         totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
+        /** populate locale based text for button **/
+        monthTypeButton.setText(Translator.getTranslation("search"));
     }
 
     /**
@@ -471,13 +479,42 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
-
+    /**
+     * populates schedule table based on selected contact
+     * @param actionEvent
+     */
     public void handleContactsCombo(ActionEvent actionEvent) {
         Contact selectedContact = (Contact) contactsComboBox.getSelectionModel().getSelectedItem();
         if (selectedContact != null) {
             scheduleTable.setItems(UserDao.getAllContactAppointments(selectedContact));
         } else {
             PopUpBox.displayError("unselectedcontact");
+        }
+    }
+
+    /**
+     * populates monthTypeResult label with appointment count
+     * @param actionEvent
+     */
+    public void handleMonthTypeButton(ActionEvent actionEvent) {
+        try {
+            int month = reportsMonthChoice.getSelectionModel().getSelectedIndex() + 1;
+            String monthName = (String) reportsMonthChoice.getSelectionModel().getSelectedItem();
+            if (monthName == null) {
+                throw new Exception("error");
+            }
+            String type = (String) reportsTypeChoice.getSelectionModel().getSelectedItem();
+            if (type == null) {
+                throw new Exception("error");
+            }
+            int appointments = UserDao.getAppointmentsByTypeAndMonth(type, month);
+            if (appointments == 1) {
+                monthsTypeResult.setText("There is " + appointments + " appointment of type " + type + " in the month of " + monthName);
+            } else {
+                monthsTypeResult.setText("There are " + appointments + " appointments of type " + type + " in the month of " + monthName);
+            }
+        } catch (Exception e) {
+            PopUpBox.displayError("monthtypeerror");
         }
     }
 }

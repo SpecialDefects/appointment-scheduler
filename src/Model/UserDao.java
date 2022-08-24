@@ -509,6 +509,30 @@ public class UserDao {
             throwables.printStackTrace();
         }
         return observableArrayList();
+    }
 
+    /**
+     * @param type type of appointments to retrieve
+     * @param month month to retrieve appointments for
+     * @return
+     */
+    public static Integer getAppointmentsByTypeAndMonth(String type, int month) {
+        try {
+            int count = 0;
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT Count(*) as Number FROM appointments WHERE MONTH(start) = " + month + " AND type ='" + type + "';";
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Appointment> appointments = observableArrayList();
+            while (results.next()) {
+                /** load each location into locations list **/
+                count = results.getInt("Number");
+            }
+            /** return locations observable list **/
+            return count;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
     }
 }
