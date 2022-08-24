@@ -2,7 +2,6 @@ package Model;
 
 import javafx.collections.ObservableList;
 
-import javax.swing.*;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,28 +10,45 @@ import java.time.ZonedDateTime;
 
 import static javafx.collections.FXCollections.*;
 
+/** Data Access Object for User **/
 public class UserDao {
 
+    /** logged in user **/
     static User loggedInUser;
+    /** users time zone id**/
     static ZoneId userZone;
 
+    /**
+     * performs username and password authentication by checking database for matches
+     * @param userName username
+     * @param password password
+     * @param zone users zone id
+     * @throws Exception
+     */
     public static void login(String userName, String password, ZoneId zone) throws Exception {
 
         try {
             Connection conn = JDBC.getConnection();
+            /** look for username in users **/
             String statement = "SELECT * FROM users WHERE User_Name = '" + userName + "'";
             JDBC.makePreparedStatement(statement, conn);
 
             ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            /** check results **/
             results.next();
+            /** if username is found and username password matches,
+             * get user information **/
             if (results.getString("Password").equals(password)) {
                 int userID = results.getInt("User_ID");
                 Date created = results.getDate("Create_date");
                 String createdBy = results.getString("Created_By");
                 Timestamp lastUpdated = results.getTimestamp("Last_Update");
                 String lastUpdatedBy = results.getString("Last_Updated_By");
+                /** set userZone **/
                 userZone = ZoneId.of("America/New_York");
+                /** set user logged in **/
                 loggedInUser = new User(userID, userName, created, createdBy, lastUpdated, lastUpdatedBy);
+                /** check if user has any upcoming appointments **/
                 checkForAppointment(loggedInUser);
             } else {
                 throw new Exception(Translator.getTranslation("invalid"));
@@ -41,6 +57,12 @@ public class UserDao {
             throw new Exception(Translator.getTranslation("invalid"));
         }
     }
+
+    /**
+     * checks if user has any appointments within the next 15 minutes of their local time
+     * @param user user to check appointments for
+     * @return true if user has an upcoming appointment, else false
+     */
     public static boolean checkForAppointment(User user) {
         ObservableList<Appointment> userAppointments = UserDao.getAllUserAppointments(user);
         LocalDateTime currentTime = LocalDateTime.now();
@@ -59,9 +81,17 @@ public class UserDao {
         PopUpBox.displayConfirmation("No Upcoming Appointments");
         return false;
     }
+
+    /**
+     * @return users time zone id
+     */
     public static ZoneId getZone() {
         return userZone;
     }
+
+    /**
+     * @return observable list of all customers
+     */
     public static ObservableList<Customer> getAllCustomers() {
         try {
             Connection conn = JDBC.getConnection();
@@ -87,6 +117,15 @@ public class UserDao {
         return observableArrayList();
     }
 
+    /**
+     * inserts customer into database
+     * @param name customer name
+     * @param address customer address
+     * @param postalCode customer postal code
+     * @param Phone customer phone
+     * @param division customer division
+     * @param user user id of user that created the customer
+     */
     public static void createCustomer(String name, String address, String postalCode, String Phone, int division, int user) {
         try {
             Connection conn = JDBC.getConnection();
@@ -104,6 +143,10 @@ public class UserDao {
         }
     }
 
+    /**
+     * @return Observable List of all Divisions
+     * @throws SQLException
+     */
     public static ObservableList<Division> getAllDivisions() throws SQLException {
         Connection conn = JDBC.getConnection();
         String statement = "SELECT * FROM first_level_divisions";
@@ -120,6 +163,10 @@ public class UserDao {
         return divisions;
     }
 
+    /**
+     * @return observable list of all countries
+     * @throws SQLException
+     */
     public static ObservableList<Country> getAllCountries() throws SQLException {
         Connection conn = JDBC.getConnection();
         String statement = "SELECT * FROM countries";
@@ -135,6 +182,11 @@ public class UserDao {
         return countries;
     }
 
+    /**
+     * removes customer from database
+     * @param customer customer to remove from database
+     * @throws SQLException
+     */
     public static void deleteCustomer(Customer customer) throws SQLException {
         Connection conn = JDBC.getConnection();
         /** check if customer has scheduled appointments **/
@@ -152,6 +204,11 @@ public class UserDao {
         JDBC.getPreparedStatement().executeUpdate();
     }
 
+    /**
+     * retrieves all of a given customers appointments
+     * @param customer customer whose appointments to retrieve
+     * @return
+     */
     public static ObservableList<Appointment> getAllCustomerAppointments(Customer customer) {
         try {
             Connection conn = JDBC.getConnection();
@@ -181,6 +238,9 @@ public class UserDao {
         return observableArrayList();
     }
 
+    /**
+     * @return observable list of all appointments
+     */
     public static ObservableList<Appointment> getAllAppointments() {
         ObservableList<Appointment> appointments = observableArrayList();
         try {
@@ -209,6 +269,15 @@ public class UserDao {
         return appointments;
     }
 
+    /**
+     * updates a given customer
+     * @param id customer id to update
+     * @param name customer name to update
+     * @param address customer address to update
+     * @param postal customer postal code to update
+     * @param division customer division to update
+     * @throws SQLException
+     */
     static public void updateCustomer(int id, String name, String address, String postal, int division) throws SQLException {
         Connection conn = JDBC.getConnection();
         Timestamp currentTime = Timestamp.from(Instant.now());
@@ -225,6 +294,10 @@ public class UserDao {
         JDBC.getPreparedStatement().executeUpdate();
     }
 
+    /**
+     * retrieves all contacts from database
+     * @return observable list of all contacts
+     */
     static public ObservableList<Contact> getAllContacts() {
         try {
             Connection conn = JDBC.getConnection();
@@ -247,6 +320,10 @@ public class UserDao {
         return observableArrayList();
     }
 
+    /**
+     * inserts a new appointment into database
+     * @param appointment appointment to insert into database
+     */
     public static void createAppointment(Appointment appointment) {
         try {
             Connection conn = JDBC.getConnection();
@@ -265,6 +342,10 @@ public class UserDao {
         }
     }
 
+    /**
+     * delete a given appointment from database
+     * @param appointment appointment to delete from database
+     */
     public static void deleteAppointment(Appointment appointment) {
         try {
             Connection conn = JDBC.getConnection();
@@ -276,10 +357,18 @@ public class UserDao {
         }
     }
 
+    /**
+     * @return user that is currently logged in
+     */
     static public User getLoggedInUser() {
         return loggedInUser;
     }
 
+    /**
+     * retrieve all appointments for a given user from database
+     * @param user user to retrieve appointments from database
+     * @return observable list of appointments
+     */
     public static ObservableList<Appointment> getAllUserAppointments(User user) {
         try {
             Connection conn = JDBC.getConnection();
