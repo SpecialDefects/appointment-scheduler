@@ -5,11 +5,17 @@ import java.sql.Date;
 
 /** Represents a user from database **/
 public class User {
+    /** user id **/
     private Integer Id;
+    /** username **/
     private String userName;
+    /** date user was created **/
     private Date created;
+    /** id of user that created this user **/
     private String createdBy;
+    /** timestamp of time last updated **/
     private Timestamp lastUpdated;
+    /** user id of user that performed last update **/
     private String lastUpdatedBy;
 
     /**
