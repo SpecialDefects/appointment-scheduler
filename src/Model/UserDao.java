@@ -490,4 +490,25 @@ public class UserDao {
         }
         return observableArrayList();
     }
+
+    public static ObservableList<String> getAppointmentTypes() {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT DISTINCT Type FROM appointments";
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<String> types = observableArrayList();
+            while (results.next()) {
+                /** load each location into locations list **/
+                String type = results.getString("Type");
+                types.add(type);
+            }
+            /** return locations observable list **/
+            return types;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
+
+    }
 }

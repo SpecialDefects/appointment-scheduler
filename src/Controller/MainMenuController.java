@@ -149,6 +149,9 @@ public class MainMenuController implements Initializable, LoadableController {
     /** reports table amount column **/
     public TableColumn reportsColAmount;
 
+    /** total label **/
+    public Label totalLabel;
+
 
     /**
      * initialize MainMenu view
@@ -246,10 +249,14 @@ public class MainMenuController implements Initializable, LoadableController {
         scheduleCustomer.setText(Translator.getTranslation("customer"));
         scheduleTab.setText(Translator.getTranslation("schedule"));
 
+        /** populate reports tab with translated text **/
+        reportsTab.setText(Translator.getTranslation("reports"));
         /** populate months picker **/
-
+        ObservableList<String> months = observableArrayList("January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "Decembter");;
+        reportsMonthChoice.setItems(months);
         /** populate appointment type picker **/
-
+        reportsTypeChoice.setItems(UserDao.getAppointmentTypes());
         /** populate reports location table **/
         reportsColAmount.setText(Translator.getTranslation("numberofappointments"));
         reportsColLocation.setText(Translator.getTranslation("location"));
@@ -257,6 +264,8 @@ public class MainMenuController implements Initializable, LoadableController {
         reportsColLocation.setCellValueFactory(new PropertyValueFactory<>("name"));
         reportsColAmount.setCellValueFactory(new PropertyValueFactory<>("numberOfAppointments"));
 
+        /** set total appointments **/
+        totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
     }
 
     /**
@@ -313,6 +322,7 @@ public class MainMenuController implements Initializable, LoadableController {
                 UserDao.deleteCustomer(selectedCustomer);
                 /** repopulate table with newly updated customer table **/
                 customerTable.setItems(UserDao.getAllCustomers());
+                totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
             }
         } else {
             PopUpBox.displayError("unselectedcustomerdelete");
@@ -356,6 +366,7 @@ public class MainMenuController implements Initializable, LoadableController {
         Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment != null) {
             UserDao.deleteAppointment(selectedAppointment);
+            totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
             if (allAppointments.isSelected()) {
                 appointmentTable.setItems(UserDao.getAllAppointments());
             } else if (monthAppointments.isSelected()) {

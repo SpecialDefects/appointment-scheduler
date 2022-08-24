@@ -101,7 +101,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="reportsTab" text="Untitled Tab">
+            <Tab fx:id="reportsTab">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -118,6 +118,7 @@
                             <TableColumn fx:id="reportsColAmount" prefWidth="212.0" text="C2" />
                           </columns>
                         </TableView>
+                        <Label fx:id="totalLabel" layoutX="152.0" layoutY="41.0" />
                      </children>
                   </AnchorPane>
               </content>
