@@ -120,6 +120,9 @@ public class MainMenuController implements Initializable, LoadableController {
     /** schedule customer column **/
     public TableColumn scheduleCustomer;
 
+    /** contact combo box label **/
+    public Label contactLabel;
+
 
     /**
      * initialize MainMenu view
