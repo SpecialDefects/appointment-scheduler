@@ -11,8 +11,21 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * represents a tool for creating views
+ */
 public class ViewCreator {
 
+    /**
+     * create view
+     * @param title view title
+     * @param viewName view file name
+     * @param width width of view
+     * @param height height of view
+     * @param actionEvent
+     * @param currentController
+     * @throws IOException
+     */
     public static void createView(String title, String viewName, int width, int height, ActionEvent actionEvent, Initializable currentController) throws IOException {
         Parent root = FXMLLoader.load(currentController.getClass().getResource("/View/" + viewName + ".fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -23,6 +36,17 @@ public class ViewCreator {
         stage.show();
     }
 
+    /**
+     * create a view with customer payload
+     * @param title view title
+     * @param viewName view file name
+     * @param width view width
+     * @param height view height
+     * @param actionEvent
+     * @param currentController
+     * @param customer customer to load into new view
+     * @throws Exception
+     */
     public static void createViewWithCustomer(String title, String viewName, int width, int height, ActionEvent actionEvent, Initializable currentController, Customer customer) throws Exception {
         try {
             FXMLLoader loader = new FXMLLoader(currentController.getClass().getResource("/View/" + viewName + ".fxml"));
@@ -42,6 +66,16 @@ public class ViewCreator {
         }
     }
 
+    /**
+     * create view with appointment payload
+     * @param title view title
+     * @param viewName view file name
+     * @param width view width
+     * @param height view height
+     * @param actionEvent
+     * @param currentController
+     * @param appointment appointment to load into new view
+     */
     public static void createViewWithAppointment(String title, String viewName, int width, int height, ActionEvent actionEvent, Initializable currentController, Appointment appointment) {
         try {
             FXMLLoader loader = new FXMLLoader(currentController.getClass().getResource("/View/" + viewName + ".fxml"));
