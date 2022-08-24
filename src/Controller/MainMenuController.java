@@ -373,8 +373,10 @@ public class MainMenuController implements Initializable, LoadableController {
     public void handleDeleteAppointment(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment != null) {
-            UserDao.deleteAppointment(selectedAppointment);
-            totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
+            if (PopUpBox.displayConfirmation("Are you sure you want to cancel " + selectedAppointment.getType() + " ID : " + selectedAppointment.getId())) {
+                UserDao.deleteAppointment(selectedAppointment);
+                totalLabel.setText(Integer.toString(UserDao.getAllAppointments().size()));
+            }
             if (allAppointments.isSelected()) {
                 appointmentTable.setItems(UserDao.getAllAppointments());
             } else if (monthAppointments.isSelected()) {

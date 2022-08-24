@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  */
 public class Translator {
     /** users locale **/
-    private static Locale currentLocale = Locale.ENGLISH;
+    private static Locale currentLocale = Locale.getDefault();
     /** get language from locale **/
     private static String language = currentLocale.getLanguage();
     /** available languages for translation **/

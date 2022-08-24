@@ -132,7 +132,6 @@ public class UserDao {
                     "Created_By, Last_Update, Last_Updated_By, Division_ID) " +
                     "VALUES ('" + name + "', '" + address + "', '" + postalCode + "', '" + Phone + "', '" + currentTime + "'," + user + ", '" +
                     currentTime + "'," + user + "," + division + ");";
-            System.out.println(statement);
             JDBC.makePreparedStatement(statement, conn);
             JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
@@ -293,7 +292,6 @@ public class UserDao {
                 "Last_Update='" + currentTime + "', " +
                 "Last_Updated_By=" + loggedInUser.getId() + " " +
                 "WHERE Customer_ID=" + id + ";";
-        System.out.println(statement);
         JDBC.makePreparedStatement(statement, conn);
         JDBC.getPreparedStatement().executeUpdate();
     }
@@ -340,7 +338,6 @@ public class UserDao {
                     "', '" + appointment.getType() + "', '" + startDateUtc + "', '" + endDateUtc + "', '" +
                     currentTime + "', " + loggedInUser.getId() + ", '" + currentTime + "', " + loggedInUser.getId() + ", " + appointment.getCustomerId() +
                     ", " + appointment.getUserId() + ", " + appointment.getContactId() + ");";
-            System.out.println(statement);
             JDBC.makePreparedStatement(statement, conn);
             JDBC.getPreparedStatement().executeUpdate();
         } catch (SQLException throwables) {
@@ -428,7 +425,6 @@ public class UserDao {
                 "User_ID=" + appointment.getUserId() + ", " +
                 "Contact_ID=" + appointment.getContactId() + " " +
                 "WHERE Appointment_ID=" + appointment.getId() + ";";
-        System.out.println(statement);
         JDBC.makePreparedStatement(statement, conn);
         JDBC.getPreparedStatement().executeUpdate();
     }
