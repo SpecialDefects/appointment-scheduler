@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ResourceBundle;
 
+/**
+ * controls MainMenuView
+ */
 public class MainMenuController implements Initializable, LoadableController {
     /** customer table **/
     public TableView customerTable;

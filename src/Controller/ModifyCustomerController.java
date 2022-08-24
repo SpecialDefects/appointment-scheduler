@@ -1,7 +1,6 @@
 package Controller;
 
 import Model.*;
-import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -15,32 +14,64 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * controls modifyCustomerView
+ */
 public class ModifyCustomerController implements Initializable, LoadableController {
+    /** save button **/
     public Button saveButton;
+    /** cancel button **/
     public Button cancelButton;
+
+    /** country choice box **/
     public ChoiceBox countryPicker;
+    /** division choice box **/
     public ChoiceBox divisionPicker;
+
+    /** phone textfield **/
     public TextField phoneTextField;
+    /** name textfield **/
     public TextField nameTextField;
+    /** address textfield **/
     public TextField addressTextField;
+    /** postal textfield **/
     public TextField postalTextField;
-    public Label idLabel;
+    /** id textfield **/
     public TextField idTextField;
+
+    /** id label **/
+    public Label idLabel;
+    /** name label **/
     public Label nameLabel;
+    /** address label **/
     public Label addressLabel;
+    /** postal label **/
     public Label postalLabel;
+    /** phone label **/
     public Label phoneLabel;
+    /** country label **/
     public Label countryLabel;
+    /** division label **/
     public Label divisionLabel;
 
+    /** list of countries **/
     public ObservableList<Country> countries;
+    /** list of divisions **/
     public ObservableList<Division> divisions;
 
+    /**
+     *
+     * @param appointment
+     */
     @Override
     public void load(Appointment appointment) {
 
     }
 
+    /**
+     * load selected customer information from previous view
+     * @param customer
+     */
     @Override
     public void load(Customer customer) {
         try {
@@ -72,6 +103,11 @@ public class ModifyCustomerController implements Initializable, LoadableControll
         }
     }
 
+    /**
+     * initialize modifyCustomerView to default state
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -79,6 +115,12 @@ public class ModifyCustomerController implements Initializable, LoadableControll
         cancelButton.setText(Translator.getTranslation("cancel"));
     }
 
+    /**
+     * handle save of new customer
+     * @param actionEvent
+     * @throws SQLException
+     * @throws IOException
+     */
     public void handleSave(ActionEvent actionEvent) throws SQLException, IOException {
         int id = Integer.parseInt(idTextField.getText());
         String name = nameTextField.getText();
@@ -90,6 +132,10 @@ public class ModifyCustomerController implements Initializable, LoadableControll
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
+    /**
+     * handle user input of country selection, filter divisions based on country selection
+     * @param actionEvent
+     */
     public void handleCountryPicker(ActionEvent actionEvent) {
         Country pickedCountry = (Country) countryPicker.getSelectionModel().getSelectedItem();
         if (pickedCountry != null) {
@@ -105,6 +151,11 @@ public class ModifyCustomerController implements Initializable, LoadableControll
         }
     }
 
+    /**
+     * handle cancel button action, return to main menu
+     * @param actionEvent
+     * @throws IOException
+     */
     public void handleCancel(ActionEvent actionEvent) throws IOException {
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
