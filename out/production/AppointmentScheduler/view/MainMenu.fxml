@@ -96,6 +96,28 @@
                               <TableColumn fx:id="scheduleCustomer" prefWidth="108.0" text="Customer" />
                            </columns>
                         </TableView>
+                        <Label fx:id="contactLabel" layoutX="24.0" layoutY="6.0" text="Label" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="reportsTab" text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="totalAppointmentsLabel" layoutX="41.0" layoutY="40.0" text="Total Appointments: " />
+                        <Label fx:id="totalAppointmentsMonthTypeLabel" layoutX="41.0" layoutY="117.0" text="Total Appointments by Month and Type" />
+                        <ComboBox fx:id="reportsMonthChoice" layoutX="41.0" layoutY="157.0" prefWidth="150.0" />
+                        <ComboBox fx:id="reportsTypeChoice" layoutX="41.0" layoutY="200.0" prefWidth="150.0" />
+                        <Label layoutX="41.0" layoutY="140.0" text="Month" />
+                        <Label layoutX="41.0" layoutY="182.0" text="Type" />
+                        <Label fx:id="totalAppointmentsLocation" layoutX="426.0" layoutY="32.0" text="Total Appointments by Location" />
+                        <TableView fx:id="reportsLocationTable" layoutX="426.0" layoutY="49.0" prefHeight="200.0" prefWidth="428.0">
+                          <columns>
+                            <TableColumn fx:id="reportsColLocation" prefWidth="214.0" text="C1" />
+                            <TableColumn fx:id="reportsColAmount" prefWidth="212.0" text="C2" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
               </content>

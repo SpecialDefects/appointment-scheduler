@@ -466,4 +466,28 @@ public class UserDao {
         }
         return observableArrayList();
     }
+
+    /**
+     * @return observable list of locations with their number of appointments
+     */
+    public static ObservableList<Location> getAppointmentsAtLocations() {
+        try {
+            Connection conn = JDBC.getConnection();
+            String statement = "SELECT Location, Count(Location) as Appointments FROM appointments GROUP BY Location";
+            JDBC.makePreparedStatement(statement, conn);
+            ResultSet results = JDBC.getPreparedStatement().executeQuery();
+            ObservableList<Location> locations = observableArrayList();
+            while (results.next()) {
+                /** load each location into locations list **/
+                String name = results.getString("Location");
+                int appointments = results.getInt("Appointments");
+                locations.add(new Location(name, appointments));
+            }
+            /** return locations observable list **/
+            return locations;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return observableArrayList();
+    }
 }

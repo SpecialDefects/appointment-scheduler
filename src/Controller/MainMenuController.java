@@ -123,6 +123,32 @@ public class MainMenuController implements Initializable, LoadableController {
     /** contact combo box label **/
     public Label contactLabel;
 
+    /** reports tab **/
+    public Tab reportsTab;
+
+    /** total appointments label **/
+    public Label totalAppointmentsLabel;
+    /** total appointments by month and type label **/
+    public Label totalAppointmentsMonthTypeLabel;
+
+    /** reports by month choice box **/
+    public ComboBox reportsMonthChoice;
+    /** reports by type choice box **/
+    public ComboBox reportsTypeChoice;
+
+
+
+    /** total appointments by location label **/
+    public Label totalAppointmentsLocation;
+
+    /** reports location table **/
+    public TableView reportsLocationTable;
+
+    /** reports table location column **/
+    public TableColumn reportsColLocation;
+    /** reports table amount column **/
+    public TableColumn reportsColAmount;
+
 
     /**
      * initialize MainMenu view
@@ -203,6 +229,9 @@ public class MainMenuController implements Initializable, LoadableController {
         scheduleEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
         scheduleCustomer.setCellValueFactory(new PropertyValueFactory<>("customerId"));
 
+        /** populate contact tab with text based on user locale **/
+        contactLabel.setText(Translator.getTranslation("contacts"));
+
         /** populate contact picker **/
         contactsComboBox.setItems(UserDao.getAllContacts());
 
@@ -216,6 +245,18 @@ public class MainMenuController implements Initializable, LoadableController {
         scheduleEnd.setText(Translator.getTranslation("end"));
         scheduleCustomer.setText(Translator.getTranslation("customer"));
         scheduleTab.setText(Translator.getTranslation("schedule"));
+
+        /** populate months picker **/
+
+        /** populate appointment type picker **/
+
+        /** populate reports location table **/
+        reportsColAmount.setText(Translator.getTranslation("numberofappointments"));
+        reportsColLocation.setText(Translator.getTranslation("location"));
+        reportsLocationTable.setItems(UserDao.getAppointmentsAtLocations());
+        reportsColLocation.setCellValueFactory(new PropertyValueFactory<>("name"));
+        reportsColAmount.setCellValueFactory(new PropertyValueFactory<>("numberOfAppointments"));
+
     }
 
     /**
