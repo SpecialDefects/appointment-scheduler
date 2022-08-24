@@ -29,8 +29,35 @@ public class User {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    /**
+     * @return user id
+     */
     public Integer getId() {
         return this.Id;
     }
 
+    /**
+     * @return username
+     */
+    public String getUserName() { return this.userName; }
+
+    /**
+     * @return date user was created
+     */
+    public Date getCreated() { return this.created; }
+
+    /**
+     * @return id of user that created this user
+     */
+    public String getCreatedBy() { return this.createdBy; }
+
+    /**
+     * @return timestamp of last update
+     */
+    public Timestamp getLastUpdated() { return this.lastUpdated; }
+
+    /**
+     * @return id of last user that updated this user
+     */
+    public String getLastUpdatedBy() { return this.lastUpdatedBy; }
 }
