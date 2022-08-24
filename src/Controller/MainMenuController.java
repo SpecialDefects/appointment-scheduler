@@ -17,45 +17,80 @@ import java.time.temporal.WeekFields;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable, LoadableController {
+    /** customer table **/
     public TableView customerTable;
+    /** appointment table **/
     public TableView appointmentTable;
 
+    /** name column for customer table **/
     public TableColumn customerName;
+    /** address column for customer table **/
     public TableColumn customerAddress;
+    /** postal column for customer table **/
     public TableColumn customerPostalCode;
+    /** phone column for customer table **/
     public TableColumn customerPhone;
 
+    /** add customer button **/
     public Button addCustomerButton;
+    /** modify customer button **/
     public Button modifyCustomerButton;
+    /** delete customer button **/
     public Button deleteCustomerButton;
 
+    /** customer table tab **/
     public Tab customersTabLabel;
+    /** appointment table tab **/
     public Tab appointmentsTabLabel;
 
+    /** create appointment button **/
     public Button createAppointmentButton;
+    /** modify appointment button **/
     public Button modifyAppointmentButton;
+    /** delete appointment button **/
     public Button deleteAppointmentButton;
 
+    /** ID column for appointment table **/
     public TableColumn appointmentID;
+    /** title column for appointment table **/
     public TableColumn appointmentTitle;
+    /** description column for appointment table **/
     public TableColumn appointmentDescription;
+    /** location column for appointment table **/
     public TableColumn appointmentLocation;
+    /** contact column for appointment table **/
     public TableColumn appointmentContact;
+    /** type column for appointment table **/
     public TableColumn appointmentType;
+    /** start column for appointment table **/
     public TableColumn appointmentStart;
+    /** end column for appointment table **/
     public TableColumn appointmentEnd;
+    /** customer column for appointment table **/
     public TableColumn appointmentCustomer;
+    /** user column for appoint table **/
     public TableColumn appointmentUser;
 
+    /** all appointments radio button **/
     public RadioButton allAppointments;
+    /** month radio button **/
     public RadioButton monthAppointments;
+    /** week radio button **/
     public RadioButton weekAppointments;
 
+    /** user ID label **/
     public Label userID;
+    /** filter by label **/
     public Label filterByLabel;
 
+    /** main tab pane **/
     public TabPane mainTabPane;
 
+    /**
+     * initialize MainMenu view
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         /** populate customers **/
@@ -64,6 +99,7 @@ public class MainMenuController implements Initializable, LoadableController {
         customerAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         customerPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
         /** populate appointments **/
         appointmentTable.setItems(UserDao.getAllAppointments());
         appointmentID.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -109,6 +145,8 @@ public class MainMenuController implements Initializable, LoadableController {
         monthAppointments.setText(Translator.getTranslation("month"));
         weekAppointments.setText(Translator.getTranslation("week"));
 
+        /** set default state of appointment filter selection **/
+        allAppointments.setSelected(true);
         allAppointments.setDisable(true);
 
         /** populate appointment buttons **/
@@ -118,20 +156,38 @@ public class MainMenuController implements Initializable, LoadableController {
 
     }
 
+    /**
+     *
+     * @param appointment
+     */
     @Override
     public void load(Appointment appointment) {
         mainTabPane.getSelectionModel().select(appointmentsTabLabel);
     }
 
+    /**
+     *
+     * @param customer
+     */
     @Override
     public void load(Customer customer) {
 
     }
 
+    /**
+     * open CreateCustomer view
+     * @param actionEvent
+     * @throws Exception
+     */
     public void handleCreateCustomer(ActionEvent actionEvent) throws Exception {
         ViewCreator.createView("createcustomer", "CreateCustomer", 600, 400, actionEvent, this);
     }
 
+    /**
+     * open modifyCustomer view with selected customer from tableview, if no customer is selected user receives a popup notification
+     * @param actionEvent
+     * @throws Exception
+     */
     public void handleModifyCustomer(ActionEvent actionEvent) throws Exception {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer != null) {
@@ -141,6 +197,11 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    /**
+     * delete selected customer, handles deletion of customers current appointments if applicable
+     * @param actionEvent
+     * @throws SQLException
+     */
     public void handleDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
         ObservableList<Appointment> customerAppointments = UserDao.getAllCustomerAppointments(selectedCustomer);
@@ -155,16 +216,34 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     public void handleAppointmentTabSelect(Event event) {
     }
 
+    /**
+     * open create customer view
+     * @param actionEvent
+     * @throws IOException
+     */
     public void handleCreateAppointment(ActionEvent actionEvent) throws IOException {
         ViewCreator.createView("createappointment", "CreateAppointment", 630, 430, actionEvent, this);
     }
 
+    /**
+     *  open modifyCustomer view with selected customer from tableview, if no customer is selected user receives a popup notification
+     * @param actionEvent
+     */
     public void handleModifyAppointment(ActionEvent actionEvent) {
+        //ViewCreator.createViewWithAppointment("createappointment", "CreateAppointment", 630, 430, actionEvent, this, selectedAppointment);
     }
 
+    /**
+     * delete selected appointment
+     * @param actionEvent
+     */
     public void handleDeleteAppointment(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         UserDao.deleteAppointment(selectedAppointment);
@@ -177,6 +256,10 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    /**
+     * show all appointments in tableview
+     * @param actionEvent
+     */
     public void allAppointmentsButton(ActionEvent actionEvent) {
         try {
             if (allAppointments.isSelected()) {
@@ -191,6 +274,9 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    /**
+     * filter appointments by current month
+     */
     public void filterAppointmentsMonth() {
         int currentMonth = LocalDate.now().getMonthValue();
         int currentYear = LocalDate.now().getYear();
@@ -201,6 +287,9 @@ public class MainMenuController implements Initializable, LoadableController {
         }));
     }
 
+    /**
+     * filter appointments by current week
+     */
     public void filterAppointmentsWeek() {
         LocalDate currentDate = LocalDate.now();
         int weekOfYear = currentDate.get(WeekFields.ISO.weekOfWeekBasedYear());
@@ -212,6 +301,10 @@ public class MainMenuController implements Initializable, LoadableController {
         }));
     }
 
+    /**
+     * activate filter month button in GUI
+     * @param actionEvent
+     */
     public void monthAppointmentsButton(ActionEvent actionEvent) {
         try {
             if (monthAppointments.isSelected()) {
@@ -229,6 +322,10 @@ public class MainMenuController implements Initializable, LoadableController {
         }
     }
 
+    /**
+     * activate filter week button in GUI
+     * @param actionEvent
+     */
     public void weekAppointmentsButton(ActionEvent actionEvent) {
         try {
             if (weekAppointments.isSelected()) {
