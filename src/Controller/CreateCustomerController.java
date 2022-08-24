@@ -13,33 +13,61 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * control create customer view
+ */
 public class CreateCustomerController implements Initializable, LoadableController {
 
+    /** create button **/
     public Button createButton;
+    /** cancel button **/
     public Button cancelButton;
 
+    /** country choicebox **/
     public ChoiceBox countryPicker;
+    /** division choicebox **/
     public ChoiceBox divisionPicker;
+
+    /** phone textfield **/
     public TextField phoneTextField;
+    /** name textfield **/
     public TextField nameTextField;
+    /** address textfield **/
     public TextField addressTextField;
+    /** postal textfield **/
     public TextField postalTextField;
+    /** id textfield **/
     public TextField idTextField;
 
+    /** id label **/
     public Label idLabel;
+    /** name label **/
     public Label nameLabel;
+    /** address label **/
     public Label addressLabel;
+    /** postal label **/
     public Label postalLabel;
+    /** phone label **/
     public Label phoneLabel;
+    /** country label **/
     public Label countryLabel;
+    /** division label **/
     public Label divisionLabel;
 
+    /** list of countries **/
     private ObservableList<Country> countries;
+    /** list of divisions **/
     private ObservableList<Division> divisions;
 
+    /**
+     * initialize create customer view to default state
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            /** populate country and division lists with all options **/
             countries = UserDao.getAllCountries();
             divisions = UserDao.getAllDivisions();
         } catch (SQLException throwables) {
@@ -67,17 +95,25 @@ public class CreateCustomerController implements Initializable, LoadableControll
         countryPicker.setItems(countries);
     }
 
+    /**
+     *
+     * @param appointment
+     */
     @Override
-    public void load(Appointment appointment) {
+    public void load(Appointment appointment) { }
 
-    }
-
+    /**
+     *
+     * @param customer
+     */
     @Override
-    public void load(Customer customer) {
+    public void load(Customer customer) { }
 
-    }
-
-    /** insert user input for new customer into database **/
+    /**
+     * handle user creation from user input
+     * @param actionEvent
+     * @throws Exception
+     */
     public void handleCreate(ActionEvent actionEvent) throws Exception {
         String name = nameTextField.getText();
         String address = addressTextField.getText();
@@ -89,13 +125,22 @@ public class CreateCustomerController implements Initializable, LoadableControll
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
-    /** return to mainmenu **/
+    /**
+     * return to mainmenu
+     * @param actionEvent
+     * @throws Exception
+     */
     public void handleCancel(ActionEvent actionEvent) throws Exception {
         ViewCreator.createView("mainmenu", "MainMenu", 900, 500, actionEvent, this);
     }
 
-    /** filter division picker based on country picker selection **/
-    public void handleCountryPicker(ActionEvent actionEvent) throws Exception {
+
+    /**
+     * filter division picker based on country picker selection
+     * @param actionEvent
+     * @throws Exception
+     */
+    public void handleCountryPicker(ActionEvent actionEvent) {
         Country pickedCountry = (Country) countryPicker.getSelectionModel().getSelectedItem();
         if (pickedCountry != null) {
             /** if divisionlabel and picker are hidden, unhide them **/
@@ -103,6 +148,7 @@ public class CreateCustomerController implements Initializable, LoadableControll
                 divisionLabel.setOpacity(1);
                 divisionPicker.setOpacity(1);
             }
+            /** change division label based on selected country's division semantics **/
             if (pickedCountry.getId() == 1) {
                 divisionLabel.setText(Translator.getTranslation("state"));
             } else if (pickedCountry.getId() == 2) {
@@ -111,10 +157,9 @@ public class CreateCustomerController implements Initializable, LoadableControll
             else {
                 divisionLabel.setText(Translator.getTranslation("province"));
             }
-            /** filter only division that belong to the currently picked country **/
-            /** LAMBDA #1 **/
+            /** LAMBDA **/
+            /** filter only division that belong to the currently picked country, avoids having another Database call or lengthy method **/
             divisionPicker.setItems(divisions.filtered(division -> division.getCountryId() == pickedCountry.getId()));
         }
-
     }
 }
