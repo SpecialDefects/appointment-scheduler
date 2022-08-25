@@ -298,6 +298,9 @@ public class ModifyAppointmentController implements Initializable, LoadableContr
             if (endDateTime.getDayOfWeek().toString() == "SATURDAY" || endDateTime.getDayOfWeek().toString() == "SUNDAY") {
                 throw new Exception("endtimeweekend");
             };
+            if (startDateTime.isEqual(endDateTime)) {
+                throw new Exception("timeequal");
+            }
 
             /** throw exception if endDate is before start date **/
             if (endDateTime.isBefore(startDateTime)) {

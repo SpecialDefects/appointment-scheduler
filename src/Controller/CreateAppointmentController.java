@@ -258,7 +258,9 @@ public class CreateAppointmentController implements Initializable, LoadableContr
             if (endDateTime.isBefore(startDateTime)) {
                 throw new Exception("endtimebefore");
             }
-
+            if (startDateTime.isEqual(endDateTime)) {
+                throw new Exception("timeequal");
+            }
 
             /** create new appointment from user input **/
             Appointment newAppointment = new Appointment(title, description, location, type,
